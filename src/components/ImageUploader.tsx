@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 interface ImageUploaderProps {
@@ -10,6 +10,7 @@ interface ImageUploaderProps {
 export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB limit per spec
 
   const validateFiles = (files: FileList | null): File[] => {
     if (!files) return [];
@@ -18,11 +19,17 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     Array.from(files).forEach(file => {
-      if (allowedTypes.includes(file.type)) {
-        validFiles.push(file);
-      } else {
+      if (!allowedTypes.includes(file.type)) {
         alert(`Файл "${file.name}" имеет неподдерживаемый формат. Разрешены только JPEG и PNG.`);
+        return;
       }
+
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        alert(`Файл "${file.name}" превышает лимит 20 МБ и не будет добавлен.`);
+        return;
+      }
+
+      validFiles.push(file);
     });
 
     return validFiles;
@@ -126,12 +133,20 @@ interface FilePreviewProps {
 function FilePreview({ file, onRemove }: FilePreviewProps) {
   const [preview, setPreview] = useState<string>('');
 
-  // Generate preview
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    setPreview(reader.result as string);
-  };
-  reader.readAsDataURL(file);
+  useEffect(() => {
+    let isMounted = true;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (isMounted) {
+        setPreview(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [file]);
 
   return (
     <div className="relative group">

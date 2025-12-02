@@ -14,7 +14,9 @@ export async function processImages(
     // Load image
     const imageData = await loadImage(file);
     const originalFileName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
-    const originalExtension = file.name.split('.').pop() || 'jpg';
+    const isPng = file.type === 'image/png' || file.name.toLowerCase().endsWith('.png');
+    const mimeType: 'image/png' | 'image/jpeg' = isPng ? 'image/png' : 'image/jpeg';
+    const outputExtension = isPng ? 'png' : 'jpg';
 
     for (const resolution of resolutions) {
       // Process image for this resolution
@@ -22,11 +24,11 @@ export async function processImages(
         imageData,
         resolution.width,
         resolution.height,
-        originalExtension
+        mimeType
       );
 
       // Add to zip with naming convention: {original_name}_{width}x{height}.{ext}
-      const fileName = `${originalFileName}_${resolution.width}x${resolution.height}.${originalExtension}`;
+      const fileName = `${originalFileName}_${resolution.width}x${resolution.height}.${outputExtension}`;
       zip.file(fileName, processedBlob);
 
       // Update progress
@@ -67,7 +69,7 @@ function resizeImage(
   image: HTMLImageElement,
   targetWidth: number,
   targetHeight: number,
-  format: string
+  mimeType: 'image/png' | 'image/jpeg'
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     // Create canvas
@@ -114,8 +116,7 @@ function resizeImage(
     ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 
     // Convert to blob
-    const mimeType = format.toLowerCase() === 'png' ? 'image/png' : 'image/jpeg';
-    const quality = format.toLowerCase() === 'png' ? undefined : 0.92; // High quality for JPEG
+    const quality = mimeType === 'image/png' ? undefined : 0.92; // High quality for JPEG
 
     canvas.toBlob(
       (blob) => {

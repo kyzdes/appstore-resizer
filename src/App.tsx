@@ -21,6 +21,10 @@ export const AVAILABLE_RESOLUTIONS: Resolution[] = [
   { id: '6.3-2', device: 'iPhone 6.3"', width: 1206, height: 2622 },
 ];
 
+const MANDATORY_RESOLUTION_IDS = AVAILABLE_RESOLUTIONS
+  .filter(resolution => resolution.device === 'iPhone 6.9"')
+  .map(resolution => resolution.id);
+
 export default function App() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [selectedResolutions, setSelectedResolutions] = useState<string[]>([
@@ -42,10 +46,16 @@ export default function App() {
   const handleResolutionToggle = (resolutionId: string) => {
     setSelectedResolutions(prev => {
       if (prev.includes(resolutionId)) {
+        if (
+          MANDATORY_RESOLUTION_IDS.includes(resolutionId) &&
+          !prev.some(id => id !== resolutionId && MANDATORY_RESOLUTION_IDS.includes(id))
+        ) {
+          alert('Минимум одно разрешение 6.9" должно оставаться выбранным для публикации в App Store.');
+          return prev;
+        }
         return prev.filter(id => id !== resolutionId);
-      } else {
-        return [...prev, resolutionId];
       }
+      return [...prev, resolutionId];
     });
   };
 
