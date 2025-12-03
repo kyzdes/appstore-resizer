@@ -1,40 +1,145 @@
+# 📱 App Store Screenshot Converter
 
-# Screenshot Conversion Service
+**Конвертер скриншотов для App Store** — это веб-приложение для конвертации изображений в требуемые разрешения для App Store Connect.
 
-This is a fully client-side rendition of the Figma concept available at https://www.figma.com/design/q219qlzNP5xmIX3UVS88rk/Screenshot-Conversion-Service.
+## ✨ Основные возможности
 
-The app runs entirely in the browser: images are validated locally (JPEG/PNG, ≤20 MB, max 10 files), resized sequentially for every selected App Store target resolution, flattened on a white background, and bundled into a ZIP archive that the browser downloads. No backend or API is required, which makes it easy to deploy on any static host or VPS.
+- 🖼️ **Поддержка форматов:** JPEG и PNG
+- 📊 **Множественная загрузка:** до 10 изображений одновременно
+- 📐 **Актуальные разрешения iPhone:** 6.9", 6.5", 6.3"
+- 🎨 **Умное масштабирование:** высококачественный алгоритм с сохранением пропорций
+- 📦 **ZIP архив:** все результаты в одном файле
+- 🔒 **Полная конфиденциальность:** вся обработка происходит в браузере
+- ⚡ **Без сервера:** не требуется backend, API или база данных
 
-## Local development
+## 🎯 Поддерживаемые разрешения
 
-```bash
-npm install          # install dependencies
-npm run dev          # start Vite dev server on http://localhost:3000
-```
+Согласно требованиям App Store Connect (декабрь 2025):
 
-## Production build
+- **iPhone 6.9":** 1290×2796 px, 1320×2868 px _(обязательно)_
+- **iPhone 6.5":** 1284×2778 px, 1242×2688 px
+- **iPhone 6.3":** 1179×2556 px, 1206×2622 px
 
-```bash
-npm run build        # outputs the static bundle into ./build
-npm run preview      # optional: test the production build locally
-```
+## 🚀 Быстрый старт
 
-## Deployment tips
-
-1. Build the project (`npm run build`), then copy the contents of the `build/` folder to your VPS (e.g., via `rsync` or `scp`).
-2. Serve the folder with any static HTTP server (Nginx/Apache/Caddy or even `npx serve build` behind a reverse proxy). No Node.js runtime is needed on the server.
-3. Make sure the server is configured to fall back to `index.html` (a standard single-page-app setting) so that direct URL refreshes keep working.
-
-Once the static files are in place, the browser-based processor will handle all resizing locally according to the App Store requirements described in the spec.
-
-## Docker
-
-A multi-stage `Dockerfile` is included to make hosting on any container-friendly VPS straightforward:
+### Локальная разработка
 
 ```bash
-docker build -t appstore-resizer .
-docker run -p 8080:80 appstore-resizer
+# Установка зависимостей
+npm install
+
+# Запуск dev-сервера
+npm run dev
+
+# Приложение доступно на http://localhost:3000
 ```
 
-The container builds the static bundle with Node.js and serves it via Nginx on port 80. After running the commands above, open http://localhost:8080 to access the app. For production VPS deployments, map the container port to your preferred public port or put it behind a reverse proxy with TLS.
-  
+### Docker (локально)
+
+```bash
+# Сборка и запуск
+docker-compose up -d
+
+# Приложение доступно на http://localhost
+```
+
+### Production build
+
+```bash
+npm run build        # собрать в ./build
+npm run preview      # тестирование production сборки
+```
+
+## 📦 Развертывание на VPS
+
+**Для детальной инструкции по развертыванию см. [DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+### Быстрое развертывание с Docker:
+
+1. Подключитесь к VPS:
+```bash
+ssh root@your-server.com
+```
+
+2. Клонируйте репозиторий:
+```bash
+git clone https://github.com/your-repo/appstore-resizer.git
+cd appstore-resizer
+```
+
+3. Запустите приложение:
+```bash
+docker-compose up -d
+```
+
+4. Настройте SSL (опционально):
+```bash
+# Установите certbot
+sudo apt-get install certbot python3-certbot-nginx
+
+# Получите SSL сертификат
+sudo certbot --nginx -d your-domain.com
+```
+
+**Готово!** Приложение доступно на `https://your-domain.com`
+
+## 📚 Документация
+
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** — Подробная инструкция по развертыванию на VPS
+- **[deployment/](./deployment/)** — Конфигурационные файлы для production
+
+## 🏗️ Технологический стек
+
+- **Frontend:** React 18, TypeScript, Vite
+- **UI:** Tailwind CSS, Radix UI
+- **Обработка изображений:** Canvas API (браузер)
+- **Архивация:** JSZip
+- **Развертывание:** Docker, Nginx
+
+## 🔧 Как это работает
+
+1. Пользователь загружает 1-10 изображений (JPEG/PNG)
+2. Выбирает целевые разрешения iPhone
+3. Приложение обрабатывает каждое изображение в браузере:
+   - Масштабирует с сохранением пропорций
+   - Заполняет фон белым цветом
+   - Использует высококачественный алгоритм сглаживания
+4. Упаковывает результаты в ZIP архив
+5. Автоматически скачивает архив
+
+**Важно:** Все файлы обрабатываются локально в браузере. Ничего не загружается на сервер!
+
+## 🔐 Безопасность и конфиденциальность
+
+- ✅ Вся обработка происходит в браузере пользователя
+- ✅ Файлы не загружаются на сервер
+- ✅ Нет отслеживания или аналитики
+- ✅ Открытый исходный код
+
+## 📋 Системные требования
+
+### Для разработки:
+- Node.js 18+
+- npm или yarn
+
+### Для VPS:
+- Ubuntu 20.04+ / Debian 10+
+- Docker и Docker Compose
+- Минимум 1GB RAM, 1 CPU core
+- 10GB свободного места
+
+## 🤝 Вклад в проект
+
+Приветствуются pull requests! Для крупных изменений сначала откройте issue для обсуждения.
+
+## 📄 Лицензия
+
+MIT License
+
+## 🙏 Благодарности
+
+Основано на концепции из Figma: https://www.figma.com/design/q219qlzNP5xmIX3UVS88rk/Screenshot-Conversion-Service
+
+---
+
+**Сделано с ❤️ для iOS разработчиков**

@@ -1,6 +1,44 @@
+# Dependencies
 node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
 build
 dist
-npm-debug.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Git
 .git
+.gitignore
+.gitattributes
+
+# Documentation (не нужно в образе)
+README.md
+DEPLOYMENT.md
+QUICKSTART.md
+FAQ.md
+deployment/
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.log

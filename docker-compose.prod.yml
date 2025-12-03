@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  appstore-resizer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: appstore-resizer:latest
+    container_name: appstore-resizer
+    restart: unless-stopped
+    # Для production используем только внутренний порт
+    # Nginx на хосте будет проксировать запросы
+    expose:
+      - "80"
+    networks:
+      - web
+    environment:
+      - TZ=Europe/Moscow
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.appstore-resizer.description=App Store Screenshot Converter"
+      - "com.appstore-resizer.version=1.0.0"
+      # Traefik labels (если используется)
+      - "traefik.enable=true"
+      - "traefik.http.routers.appstore-resizer.rule=Host(`your-domain.com`)"
+      - "traefik.http.routers.appstore-resizer.entrypoints=websecure"
+      - "traefik.http.routers.appstore-resizer.tls.certresolver=letsencrypt"
+      - "traefik.http.services.appstore-resizer.loadbalancer.server.port=80"
+
+networks:
+  web:
+    external: true

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  appstore-resizer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: appstore-resizer:latest
+    container_name: appstore-resizer
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - TZ=Europe/Moscow
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.appstore-resizer.description=App Store Screenshot Converter"
+      - "com.appstore-resizer.version=1.0.0"
