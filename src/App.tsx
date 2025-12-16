@@ -235,10 +235,10 @@ export default function App() {
         : { background: 'radial-gradient(circle at 20% 20%, #eef2ff, #f9fafb)' },
 
       // Neomorphic карточки
-      neumorphicCard: 'neumorphic-raised rounded-2xl p-8',
-      neumorphicCardHover: 'neumorphic-raised neumorphic-raised-hover rounded-2xl p-8',
-      neumorphicButton: 'neumorphic-raised-sm rounded-xl px-5 py-2.5 transition-all duration-300',
-      neumorphicInset: 'neumorphic-inset rounded-xl p-5',
+      neumorphicCard: 'neumorphic-raised rounded-2xl p-6',
+      neumorphicCardHover: 'neumorphic-raised neumorphic-raised-hover rounded-2xl p-6',
+      neumorphicButton: 'neumorphic-raised-sm rounded-xl px-4 py-2 transition-all duration-300',
+      neumorphicInset: 'neumorphic-inset rounded-xl p-4',
 
       // Text colors
       textPrimary: isDarkMode ? 'text-gray-100' : 'text-gray-900',
@@ -330,14 +330,14 @@ export default function App() {
       className={`${theme.pageBg} ${isDarkMode ? 'theme-dark text-gray-100' : 'theme-light text-gray-900'}`}
       style={theme.pageBgStyle}
     >
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-10">
+      <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-16 relative z-10">
+        <div className="mb-12 relative z-10">
           {/* Top bar with controls */}
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
               {/* Logo with neomorphic effect */}
-              <div className="neumorphic-raised p-3.5 rounded-2xl relative">
+              <div className="neumorphic-raised p-3 rounded-2xl relative">
                 <div className="absolute inset-0 neumorphic-gradient-primary rounded-2xl opacity-90" />
                 <Smartphone className="w-8 h-8 text-white relative z-10" />
               </div>
@@ -383,7 +383,7 @@ export default function App() {
 
           {/* Title and subtitle - centered */}
           <div className="text-center space-y-4">
-            <h1 className={`text-4xl sm:text-5xl font-bold tracking-tight ${theme.textPrimary}`}>
+            <h1 className={`text-4xl font-bold tracking-tight ${theme.textPrimary}`}>
               {t.title}
             </h1>
             <p className={`text-lg max-w-3xl mx-auto leading-relaxed ${theme.textSecondary}`}>
@@ -393,9 +393,9 @@ export default function App() {
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 relative z-10">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 relative z-10">
           {/* Left Column - Upload & Resolutions */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {/* Upload Section */}
             <div className={theme.neumorphicCard}>
               <h2 className={`${theme.textPrimary} mb-4`}>
@@ -441,7 +441,7 @@ export default function App() {
 
           {/* Right Column - Summary & Actions */}
           <div className="lg:col-span-1">
-            <div className={`${theme.neumorphicCard} lg:sticky lg:top-12 space-y-8`}>
+            <div className={`${theme.neumorphicCard} lg:sticky lg:top-8 space-y-6`}>
               {/* Header */}
               <div className="flex items-center justify-between">
                 <h2 className={`text-xl font-semibold ${theme.textPrimary}`}>
