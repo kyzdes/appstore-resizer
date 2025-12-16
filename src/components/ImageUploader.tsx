@@ -107,14 +107,40 @@ export function ImageUploader({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-          isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : isDarkMode
-              ? 'border-slate-700 bg-slate-900 hover:border-slate-600 hover:bg-slate-800'
-              : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
-        }`}
+        className={`rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+          isDarkMode
+            ? 'bg-slate-900 border border-slate-800 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]'
+            : 'bg-white border border-gray-200 shadow-sm'
+        } ${isDragging ? 'scale-[1.02] ring-2 ring-blue-500/60' : ''}`}
       >
+        {/* Gradient overlay on drag */}
+        {isDragging && (
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl" />
+        )}
+
+        {/* Content */}
+        <div className="relative z-10">
+          <Upload className={`w-16 h-16 mx-auto mb-4 transition-all duration-300 ${
+            isDragging
+              ? 'text-blue-500 scale-110 animate-bounce'
+              : isDarkMode
+                ? 'text-gray-500 group-hover:text-blue-400 group-hover:scale-105'
+                : 'text-gray-400 group-hover:text-blue-500 group-hover:scale-105'
+          }`} />
+
+          <p className={`text-lg font-medium mb-2 transition-colors ${
+            isDragging
+              ? 'text-blue-600'
+              : isDarkMode ? 'text-gray-100' : 'text-gray-800'
+          }`}>
+            {texts.dropTitle}
+          </p>
+
+          <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+            {texts.dropSubtitle}
+          </p>
+        </div>
+
         <input
           ref={fileInputRef}
           type="file"
@@ -123,13 +149,6 @@ export function ImageUploader({
           onChange={handleFileInputChange}
           className="hidden"
         />
-        <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
-        <p className={isDarkMode ? 'text-gray-100 mb-2' : 'text-gray-700 mb-2'}>
-          {texts.dropTitle}
-        </p>
-        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
-          {texts.dropSubtitle}
-        </p>
       </div>
 
       {/* Uploaded Files Preview */}
@@ -175,7 +194,14 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
 
   return (
     <div className="relative group">
-      <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+      {/* Preview card */}
+      <div
+        className={`rounded-xl overflow-hidden aspect-[9/16] relative transition-all duration-300 ${
+          isDarkMode
+            ? 'bg-slate-900 border border-slate-800 shadow-[0_15px_45px_-30px_rgba(0,0,0,0.9)]'
+            : 'bg-gray-50 border border-gray-200 shadow-sm'
+        }`}
+      >
         {preview ? (
           <img
             src={preview}
@@ -183,21 +209,36 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className={`w-full h-full flex items-center justify-center ${
+            isDarkMode ? 'bg-slate-800' : 'bg-gray-100'
+          }`}>
             <ImageIcon className="w-8 h-8 text-gray-400" />
           </div>
         )}
+
+        {/* Overlay gradient on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
+
+      {/* Remove button - small neomorphic raised button */}
       <button
         onClick={onRemove}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
+        className="absolute -top-2 -right-2 z-10 rounded-full p-2 bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
         aria-label="Remove image"
       >
         <X className="w-4 h-4" />
       </button>
-      <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mt-2 truncate text-center`}>
-        {file.name}
-      </p>
+
+      {/* Filename */}
+      <div className={`mt-2 rounded-lg px-3 py-2 ${
+        isDarkMode ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'
+      }`}>
+        <p className={`text-sm truncate text-center ${
+          isDarkMode ? 'text-gray-300' : 'text-gray-700'
+        }`}>
+          {file.name}
+        </p>
+      </div>
     </div>
   );
 }
