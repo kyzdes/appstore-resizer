@@ -6,6 +6,11 @@ export async function processImages(
   resolutions: Resolution[],
   onProgress: (progress: number) => void
 ): Promise<void> {
+  const sanitizeSegment = (value: string) => {
+    const cleaned = value.replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/^_+|_+$/g, '');
+    return cleaned || 'image';
+  };
+
   const zip = new JSZip();
   const totalOperations = files.length * resolutions.length;
   const totalWorkUnits = totalOperations + 1; // include zip generation as a step
@@ -29,8 +34,10 @@ export async function processImages(
       );
 
       // Add to zip with naming convention: {original_name}_{width}x{height}.{ext}
-      const fileName = `${originalFileName}_${resolution.width}x${resolution.height}.${outputExtension}`;
-      const folderPath = `${resolution.device}/${resolution.diagonal}`;
+      const safeBaseName = sanitizeSegment(originalFileName);
+      const safeDiagonal = sanitizeSegment(resolution.diagonal);
+      const fileName = `${safeBaseName}_${resolution.width}x${resolution.height}.${outputExtension}`;
+      const folderPath = `${resolution.device}/${safeDiagonal}`;
       const targetFolder = zip.folder(folderPath) ?? zip;
       targetFolder.file(fileName, processedBlob);
 

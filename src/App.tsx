@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ImageUploader } from './components/ImageUploader';
 import { ResolutionSelector } from './components/ResolutionSelector';
 import { ProgressIndicator } from './components/ProgressIndicator';
@@ -12,6 +12,130 @@ export interface Resolution {
   width: number;
   height: number;
 }
+
+type Locale = 'ru' | 'en';
+
+const TRANSLATIONS: Record<Locale, {
+  title: string;
+  subtitle: string;
+  steps: {
+    upload: string;
+    resolutions: string;
+  };
+  hint: string;
+  summaryTitle: string;
+  summaryUploaded: string;
+  summarySelected: string;
+  summaryTotal: string;
+  processingLabel: string;
+  localNote: string;
+  readyTitle: string;
+  readySubtitle: string;
+  convert: string;
+  processing: string;
+  footerNote: string;
+  upload: {
+    dropTitle: string;
+    dropSubtitle: string;
+    helperFormats: string;
+    helperCount: string;
+    helperSize: string;
+    alertUnsupported: (name: string) => string;
+    alertTooLarge: (name: string) => string;
+    alertTooMany: (current: number, limit: number) => string;
+  };
+  selector: {
+    quickSelect: string;
+    selectAll: string;
+    clearAll: string;
+    selectDiagonal: string;
+    clearDiagonal: string;
+    countLabel: (selected: number, total: number) => string;
+    orientation: {
+      portrait: string;
+      landscape: string;
+    };
+  };
+}> = {
+  ru: {
+    title: 'App Store Screenshot Converter',
+    subtitle: 'Конвертируйте скриншоты в требуемые разрешения для App Store Connect. Загрузите до 10 изображений и выберите целевые разрешения iPhone, iPad и Apple Watch.',
+    steps: { upload: '1. Загрузите изображения', resolutions: '2. Выберите целевые разрешения' },
+    hint: 'Подсказка: выберите диагональ или нажмите «Выбрать все», чтобы подготовить полный набор для App Store и отзывов Apple.',
+    summaryTitle: 'Сводка',
+    summaryUploaded: 'Загружено файлов:',
+    summarySelected: 'Выбрано разрешений:',
+    summaryTotal: 'Итого изображений:',
+    processingLabel: 'Обработка изображений',
+    localNote: 'Обработка выполняется локально в вашем браузере',
+    readyTitle: 'Готово!',
+    readySubtitle: 'Архив успешно скачан',
+    convert: 'Конвертировать и скачать',
+    processing: 'Обработка...',
+    footerNote: 'Все изображения обрабатываются локально. Файлы не загружаются на сервер.',
+    upload: {
+      dropTitle: 'Перетащите файлы сюда или нажмите для выбора',
+      dropSubtitle: 'JPEG или PNG, до 10 файлов',
+      helperFormats: '• Форматы: JPEG, PNG',
+      helperCount: '• Количество: 1-10 файлов',
+      helperSize: '• Размер: до 10 МБ на файл',
+      alertUnsupported: (name) => `Файл "${name}" имеет неподдерживаемый формат. Разрешены только JPEG и PNG.`,
+      alertTooLarge: (name) => `Файл "${name}" превышает лимит 10 МБ и не будет добавлен.`,
+      alertTooMany: (current, limit) => `Можно загрузить максимум ${limit} файлов. У вас уже загружено ${current} файлов.`,
+    },
+    selector: {
+      quickSelect: 'Быстрый выбор',
+      selectAll: 'Выбрать всё',
+      clearAll: 'Снять все',
+      selectDiagonal: 'Выбрать диагональ',
+      clearDiagonal: 'Снять диагональ',
+      countLabel: (selected, total) => `${selected}/${total} разрешений`,
+      orientation: {
+        portrait: 'Портрет',
+        landscape: 'Альбом',
+      },
+    },
+  },
+  en: {
+    title: 'App Store Screenshot Converter',
+    subtitle: 'Convert screenshots to the required resolutions for App Store Connect. Upload up to 10 images and pick iPhone, iPad, and Apple Watch targets.',
+    steps: { upload: '1. Upload images', resolutions: '2. Choose target resolutions' },
+    hint: 'Tip: pick a diagonal or use “Select all” to prepare a full set for App Store review.',
+    summaryTitle: 'Summary',
+    summaryUploaded: 'Files uploaded:',
+    summarySelected: 'Resolutions selected:',
+    summaryTotal: 'Total outputs:',
+    processingLabel: 'Processing images',
+    localNote: 'All processing runs locally in your browser',
+    readyTitle: 'Done!',
+    readySubtitle: 'Archive downloaded',
+    convert: 'Convert & download',
+    processing: 'Processing...',
+    footerNote: 'All processing happens locally. Files are never uploaded to a server.',
+    upload: {
+      dropTitle: 'Drop files here or click to select',
+      dropSubtitle: 'JPEG or PNG, up to 10 files',
+      helperFormats: '• Formats: JPEG, PNG',
+      helperCount: '• Count: 1-10 files',
+      helperSize: '• Size: up to 10 MB per file',
+      alertUnsupported: (name) => `File "${name}" has an unsupported format. Only JPEG and PNG are allowed.`,
+      alertTooLarge: (name) => `File "${name}" exceeds the 10 MB limit and will be skipped.`,
+      alertTooMany: (current, limit) => `You can upload at most ${limit} files. You already have ${current} files added.`,
+    },
+    selector: {
+      quickSelect: 'Quick select',
+      selectAll: 'Select all',
+      clearAll: 'Clear all',
+      selectDiagonal: 'Select diagonal',
+      clearDiagonal: 'Clear diagonal',
+      countLabel: (selected, total) => `${selected}/${total} resolutions`,
+      orientation: {
+        portrait: 'Portrait',
+        landscape: 'Landscape',
+      },
+    },
+  },
+};
 
 export const AVAILABLE_RESOLUTIONS: Resolution[] = [
   // iPhone 6.9"
@@ -86,6 +210,8 @@ export const AVAILABLE_RESOLUTIONS: Resolution[] = [
 ];
 
 export default function App() {
+  const [locale, setLocale] = useState<Locale>('ru');
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [selectedResolutions, setSelectedResolutions] = useState<string[]>([
     'iphone-6-9-1260x2736', // Default to one of the 6.9" iPhone resolutions
@@ -93,6 +219,45 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const MAX_FILES = 10;
+  const MAX_FILE_SIZE_MB = 10;
+
+  const t = useMemo(() => TRANSLATIONS[locale], [locale]);
+
+  const theme = useMemo(
+    () => ({
+      pageBg: isDarkMode
+        ? 'bg-gradient-to-br from-slate-900 via-slate-950 to-black'
+        : 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
+      card: isDarkMode
+        ? 'bg-slate-900 border border-slate-800 shadow-sm'
+        : 'bg-white border border-gray-200 shadow-sm',
+      textPrimary: isDarkMode ? 'text-gray-100' : 'text-gray-900',
+      textSecondary: isDarkMode ? 'text-gray-400' : 'text-gray-600',
+      textMuted: isDarkMode ? 'text-gray-500' : 'text-gray-500',
+      divider: isDarkMode ? 'border-slate-800' : 'border-gray-100',
+      infoBox: isDarkMode
+        ? 'bg-slate-800 border border-slate-700 text-gray-200'
+        : 'bg-blue-50 border border-blue-100 text-blue-900',
+      tag: isDarkMode
+        ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full'
+        : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full',
+      primaryButton: isDarkMode
+        ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-slate-700 disabled:text-gray-400'
+        : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-white',
+      summaryCard: isDarkMode
+        ? 'bg-slate-900 border border-slate-800 shadow-sm'
+        : 'bg-white border border-gray-200 shadow-sm',
+      accentIcon: isDarkMode ? 'bg-blue-600' : 'bg-blue-600',
+      progress: {
+        track: isDarkMode ? 'bg-slate-800' : 'bg-gray-200',
+        fill: 'bg-blue-600',
+        text: isDarkMode ? 'text-gray-200' : 'text-gray-900',
+        label: isDarkMode ? 'text-gray-300' : 'text-gray-700',
+      },
+    }),
+    [isDarkMode]
+  );
 
   const handleFilesSelected = (files: File[]) => {
     setUploadedFiles(files);
@@ -169,22 +334,61 @@ export default function App() {
   const totalOutputImages = uploadedFiles.length * selectedResolutions.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className={`min-h-screen ${theme.pageBg} ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
       <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-2xl">
-              <Smartphone className="w-8 h-8 text-white" />
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className={`${theme.accentIcon} p-3 rounded-2xl`}>
+                <Smartphone className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setLocale('ru')}
+                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                    locale === 'ru'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : isDarkMode
+                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
+                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                  }`}
+                >
+                  RU
+                </button>
+                <button
+                  onClick={() => setLocale('en')}
+                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                    locale === 'en'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : isDarkMode
+                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
+                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
             </div>
+            <button
+              onClick={() => setIsDarkMode(prev => !prev)}
+              className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                isDarkMode
+                  ? 'bg-slate-800 border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
+                  : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700 bg-white'
+              }`}
+            >
+              {isDarkMode ? 'Light' : 'Dark'}
+            </button>
           </div>
-          <h1 className="text-gray-900 mb-2">
-            App Store Screenshot Converter
-          </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Конвертируйте скриншоты в требуемые разрешения для App Store Connect.
-            Загрузите до 10 изображений и выберите целевые разрешения iPhone, iPad и Apple Watch.
-          </p>
+          <div className="text-center">
+            <h1 className={`${theme.textPrimary} mb-2`}>
+              {t.title}
+            </h1>
+            <p className={`${theme.textSecondary} max-w-2xl mx-auto`}>
+              {t.subtitle}
+            </p>
+          </div>
         </div>
 
         {/* Main Content */}
@@ -192,26 +396,30 @@ export default function App() {
           {/* Left Column - Upload & Resolutions */}
           <div className="lg:col-span-2 space-y-6">
             {/* Upload Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-gray-900 mb-4">
-                1. Загрузите изображения
+            <div className={`${theme.card} rounded-2xl p-6`}>
+              <h2 className={`${theme.textPrimary} mb-4`}>
+                {t.steps.upload}
               </h2>
               <ImageUploader
                 onFilesSelected={handleFilesSelected}
                 uploadedFiles={uploadedFiles}
                 onRemoveFile={handleRemoveFile}
+                maxFiles={MAX_FILES}
+                maxFileSizeMB={MAX_FILE_SIZE_MB}
+                texts={t.upload}
+                isDarkMode={isDarkMode}
               />
-              <div className="mt-4 text-gray-600 space-y-1">
-                <p>• Форматы: JPEG, PNG</p>
-                <p>• Количество: 1-10 файлов</p>
-                <p>• Рекомендуемый минимум: 1242×2648 px</p>
+              <div className={`mt-4 space-y-1 ${theme.textSecondary}`}>
+                <p>{t.upload.helperFormats}</p>
+                <p>{t.upload.helperCount}</p>
+                <p>{t.upload.helperSize}</p>
               </div>
             </div>
 
             {/* Resolution Selection */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-gray-900 mb-4">
-                2. Выберите целевые разрешения
+            <div className={`${theme.card} rounded-2xl p-6`}>
+              <h2 className={`${theme.textPrimary} mb-4`}>
+                {t.steps.resolutions}
               </h2>
               <ResolutionSelector
                 resolutions={AVAILABLE_RESOLUTIONS}
@@ -219,10 +427,12 @@ export default function App() {
                 onToggle={handleResolutionToggle}
                 onToggleDiagonal={handleDiagonalToggle}
                 onToggleAll={handleSelectAll}
+                texts={t.selector}
+                isDarkMode={isDarkMode}
               />
-              <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                <p className="text-blue-900 space-y-1">
-                  <span className="font-medium">Подсказка:</span> выберите диагональ или нажмите «Выбрать все», чтобы подготовить полный набор для App Store и отзывов Apple.
+              <div className={`mt-4 p-4 rounded-xl ${theme.infoBox}`}>
+                <p className="space-y-1">
+                  {t.hint}
                 </p>
               </div>
             </div>
@@ -230,41 +440,41 @@ export default function App() {
 
           {/* Right Column - Summary & Actions */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-8">
-              <h2 className="text-gray-900 mb-6">
-                Сводка
+            <div className={`${theme.summaryCard} rounded-2xl p-6 sticky top-8`}>
+              <h2 className={`${theme.textPrimary} mb-6`}>
+                {t.summaryTitle}
               </h2>
 
               <div className="space-y-4 mb-6">
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Загружено файлов:</span>
-                  <span className="text-gray-900">{uploadedFiles.length}</span>
+                <div className={`flex items-center justify-between py-3 border-b ${theme.divider}`}>
+                  <span className={theme.textSecondary}>{t.summaryUploaded}</span>
+                  <span className={theme.textPrimary}>{uploadedFiles.length}</span>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Выбрано разрешений:</span>
-                  <span className="text-gray-900">{selectedResolutions.length}</span>
+                <div className={`flex items-center justify-between py-3 border-b ${theme.divider}`}>
+                  <span className={theme.textSecondary}>{t.summarySelected}</span>
+                  <span className={theme.textPrimary}>{selectedResolutions.length}</span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-gray-600">Итого изображений:</span>
-                  <span className="text-gray-900">{totalOutputImages}</span>
+                  <span className={theme.textSecondary}>{t.summaryTotal}</span>
+                  <span className={theme.textPrimary}>{totalOutputImages}</span>
                 </div>
               </div>
 
               {isProcessing && (
                 <div className="mb-6">
-                  <ProgressIndicator progress={progress} />
+                  <ProgressIndicator progress={progress} label={t.processingLabel} isDarkMode={isDarkMode} />
                 </div>
               )}
 
               {isCompleted && (
-                <div className="mb-6 p-4 bg-green-50 rounded-xl border border-green-200 flex items-start gap-3">
+                <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${isDarkMode ? 'bg-green-900/30 border-green-700 text-green-200' : 'bg-green-50 border-green-200'}`}>
                   <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-green-900">
-                      Готово!
+                    <p className={isDarkMode ? 'text-green-200' : 'text-green-900'}>
+                      {t.readyTitle}
                     </p>
-                    <p className="text-green-700 mt-1">
-                      Архив успешно скачан
+                    <p className={isDarkMode ? 'text-green-200/80 mt-1' : 'text-green-700 mt-1'}>
+                      {t.readySubtitle}
                     </p>
                   </div>
                 </div>
@@ -273,22 +483,22 @@ export default function App() {
               <button
                 onClick={handleConvert}
                 disabled={uploadedFiles.length === 0 || selectedResolutions.length === 0 || isProcessing}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className={`w-full py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${theme.primaryButton}`}
               >
                 <Download className="w-5 h-5" />
-                {isProcessing ? 'Обработка...' : 'Конвертировать и скачать'}
+                {isProcessing ? t.processing : t.convert}
               </button>
 
-              <p className="text-gray-500 mt-4 text-center">
-                Обработка выполняется локально в вашем браузере
+              <p className={`${theme.textSecondary} mt-4 text-center`}>
+                {t.localNote}
               </p>
             </div>
           </div>
         </div>
 
         {/* Footer Info */}
-        <div className="mt-12 text-center text-gray-500">
-          <p>Все изображения обрабатываются локально. Файлы не загружаются на сервер.</p>
+        <div className={`mt-12 text-center ${theme.textSecondary}`}>
+          <p>{t.footerNote}</p>
         </div>
       </div>
     </div>

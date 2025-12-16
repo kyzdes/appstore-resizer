@@ -5,12 +5,33 @@ interface ImageUploaderProps {
   onFilesSelected: (files: File[]) => void;
   uploadedFiles: File[];
   onRemoveFile: (index: number) => void;
+  maxFiles: number;
+  maxFileSizeMB: number;
+  texts: {
+    dropTitle: string;
+    dropSubtitle: string;
+    helperFormats: string;
+    helperCount: string;
+    helperSize: string;
+    alertUnsupported: (name: string) => string;
+    alertTooLarge: (name: string) => string;
+    alertTooMany: (current: number, limit: number) => string;
+  };
+  isDarkMode?: boolean;
 }
 
-export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: ImageUploaderProps) {
+export function ImageUploader({
+  onFilesSelected,
+  uploadedFiles,
+  onRemoveFile,
+  maxFiles,
+  maxFileSizeMB,
+  texts,
+  isDarkMode = false,
+}: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB limit per spec
+  const MAX_FILE_SIZE_BYTES = maxFileSizeMB * 1024 * 1024;
 
   const validateFiles = (files: FileList | null): File[] => {
     if (!files) return [];
@@ -20,12 +41,12 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
 
     Array.from(files).forEach(file => {
       if (!allowedTypes.includes(file.type)) {
-        alert(`Файл "${file.name}" имеет неподдерживаемый формат. Разрешены только JPEG и PNG.`);
+        alert(texts.alertUnsupported(file.name));
         return;
       }
 
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        alert(`Файл "${file.name}" превышает лимит 20 МБ и не будет добавлен.`);
+        alert(texts.alertTooLarge(file.name));
         return;
       }
 
@@ -40,9 +61,9 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
     
     if (validFiles.length > 0) {
       const totalFiles = uploadedFiles.length + validFiles.length;
-      if (totalFiles > 10) {
-        alert(`Можно загрузить максимум 10 файлов. У вас уже загружено ${uploadedFiles.length} файлов.`);
-        const allowedCount = 10 - uploadedFiles.length;
+      if (totalFiles > maxFiles) {
+        alert(texts.alertTooMany(uploadedFiles.length, maxFiles));
+        const allowedCount = maxFiles - uploadedFiles.length;
         if (allowedCount > 0) {
           onFilesSelected([...uploadedFiles, ...validFiles.slice(0, allowedCount)]);
         }
@@ -89,7 +110,9 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
           isDragging
             ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
+            : isDarkMode
+              ? 'border-slate-700 bg-slate-900 hover:border-slate-600 hover:bg-slate-800'
+              : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:bg-gray-100'
         }`}
       >
         <input
@@ -101,11 +124,11 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
           className="hidden"
         />
         <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
-        <p className="text-gray-700 mb-2">
-          Перетащите файлы сюда или нажмите для выбора
+        <p className={isDarkMode ? 'text-gray-100 mb-2' : 'text-gray-700 mb-2'}>
+          {texts.dropTitle}
         </p>
-        <p className="text-gray-500">
-          JPEG или PNG, до 10 файлов
+        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
+          {texts.dropSubtitle}
         </p>
       </div>
 
@@ -117,6 +140,7 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
               key={`${file.name}-${index}`}
               file={file}
               onRemove={() => onRemoveFile(index)}
+              isDarkMode={isDarkMode}
             />
           ))}
         </div>
@@ -128,9 +152,10 @@ export function ImageUploader({ onFilesSelected, uploadedFiles, onRemoveFile }: 
 interface FilePreviewProps {
   file: File;
   onRemove: () => void;
+  isDarkMode: boolean;
 }
 
-function FilePreview({ file, onRemove }: FilePreviewProps) {
+function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
   const [preview, setPreview] = useState<string>('');
 
   useEffect(() => {
@@ -170,7 +195,7 @@ function FilePreview({ file, onRemove }: FilePreviewProps) {
       >
         <X className="w-4 h-4" />
       </button>
-      <p className="text-gray-600 mt-2 truncate text-center">
+      <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} mt-2 truncate text-center`}>
         {file.name}
       </p>
     </div>
