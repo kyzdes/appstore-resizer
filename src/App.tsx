@@ -7,28 +7,88 @@ import { Smartphone, Download, CheckCircle2 } from 'lucide-react';
 
 export interface Resolution {
   id: string;
-  device: string;
+  device: 'iPhone' | 'iPad' | 'Apple Watch';
+  diagonal: string;
   width: number;
   height: number;
 }
 
 export const AVAILABLE_RESOLUTIONS: Resolution[] = [
-  { id: '6.9-1', device: 'iPhone 6.9"', width: 1290, height: 2796 },
-  { id: '6.9-2', device: 'iPhone 6.9"', width: 1320, height: 2868 },
-  { id: '6.5-1', device: 'iPhone 6.5"', width: 1284, height: 2778 },
-  { id: '6.5-2', device: 'iPhone 6.5"', width: 1242, height: 2688 },
-  { id: '6.3-1', device: 'iPhone 6.3"', width: 1179, height: 2556 },
-  { id: '6.3-2', device: 'iPhone 6.3"', width: 1206, height: 2622 },
-];
+  // iPhone 6.9"
+  { id: 'iphone-6-9-1260x2736', device: 'iPhone', diagonal: '6.9"', width: 1260, height: 2736 },
+  { id: 'iphone-6-9-2736x1260', device: 'iPhone', diagonal: '6.9"', width: 2736, height: 1260 },
+  { id: 'iphone-6-9-1320x2868', device: 'iPhone', diagonal: '6.9"', width: 1320, height: 2868 },
+  { id: 'iphone-6-9-2868x1320', device: 'iPhone', diagonal: '6.9"', width: 2868, height: 1320 },
+  { id: 'iphone-6-9-1290x2796', device: 'iPhone', diagonal: '6.9"', width: 1290, height: 2796 },
+  { id: 'iphone-6-9-2796x1290', device: 'iPhone', diagonal: '6.9"', width: 2796, height: 1290 },
 
-const MANDATORY_RESOLUTION_IDS = AVAILABLE_RESOLUTIONS
-  .filter(resolution => resolution.device === 'iPhone 6.9"')
-  .map(resolution => resolution.id);
+  // iPhone 6.5"
+  { id: 'iphone-6-5-1242x2688', device: 'iPhone', diagonal: '6.5"', width: 1242, height: 2688 },
+  { id: 'iphone-6-5-2688x1242', device: 'iPhone', diagonal: '6.5"', width: 2688, height: 1242 },
+  { id: 'iphone-6-5-1284x2778', device: 'iPhone', diagonal: '6.5"', width: 1284, height: 2778 },
+  { id: 'iphone-6-5-2778x1284', device: 'iPhone', diagonal: '6.5"', width: 2778, height: 1284 },
+
+  // iPhone 6.3"
+  { id: 'iphone-6-3-1206x2622', device: 'iPhone', diagonal: '6.3"', width: 1206, height: 2622 },
+  { id: 'iphone-6-3-2622x1206', device: 'iPhone', diagonal: '6.3"', width: 2622, height: 1206 },
+  { id: 'iphone-6-3-1179x2556', device: 'iPhone', diagonal: '6.3"', width: 1179, height: 2556 },
+  { id: 'iphone-6-3-2556x1179', device: 'iPhone', diagonal: '6.3"', width: 2556, height: 1179 },
+
+  // iPhone 6.1"
+  { id: 'iphone-6-1-1125x2436', device: 'iPhone', diagonal: '6.1"', width: 1125, height: 2436 },
+  { id: 'iphone-6-1-2436x1125', device: 'iPhone', diagonal: '6.1"', width: 2436, height: 1125 },
+  { id: 'iphone-6-1-1080x2340', device: 'iPhone', diagonal: '6.1"', width: 1080, height: 2340 },
+  { id: 'iphone-6-1-2340x1080', device: 'iPhone', diagonal: '6.1"', width: 2340, height: 1080 },
+  { id: 'iphone-6-1-2532x1170', device: 'iPhone', diagonal: '6.1"', width: 2532, height: 1170 },
+  { id: 'iphone-6-1-1170x2532', device: 'iPhone', diagonal: '6.1"', width: 1170, height: 2532 },
+
+  // iPad 13"
+  { id: 'ipad-13-2064x2752', device: 'iPad', diagonal: '13"', width: 2064, height: 2752 },
+  { id: 'ipad-13-2752x2064', device: 'iPad', diagonal: '13"', width: 2752, height: 2064 },
+  { id: 'ipad-13-2048x2732', device: 'iPad', diagonal: '13"', width: 2048, height: 2732 },
+  { id: 'ipad-13-2732x2048', device: 'iPad', diagonal: '13"', width: 2732, height: 2048 },
+
+  // iPad 11"
+  { id: 'ipad-11-1668x2420', device: 'iPad', diagonal: '11"', width: 1668, height: 2420 },
+  { id: 'ipad-11-2420x1668', device: 'iPad', diagonal: '11"', width: 2420, height: 1668 },
+  { id: 'ipad-11-1668x2388', device: 'iPad', diagonal: '11"', width: 1668, height: 2388 },
+  { id: 'ipad-11-2388x1668', device: 'iPad', diagonal: '11"', width: 2388, height: 1668 },
+  { id: 'ipad-11-1640x2360', device: 'iPad', diagonal: '11"', width: 1640, height: 2360 },
+  { id: 'ipad-11-2360x1640', device: 'iPad', diagonal: '11"', width: 2360, height: 1640 },
+  { id: 'ipad-11-2266x1488', device: 'iPad', diagonal: '11"', width: 2266, height: 1488 },
+  { id: 'ipad-11-1488x2266', device: 'iPad', diagonal: '11"', width: 1488, height: 2266 },
+
+  // iPad 12.9"
+  { id: 'ipad-12-9-2048x2732', device: 'iPad', diagonal: '12.9"', width: 2048, height: 2732 },
+  { id: 'ipad-12-9-2732x2048', device: 'iPad', diagonal: '12.9"', width: 2732, height: 2048 },
+
+  // iPad 10.5"
+  { id: 'ipad-10-5-1668x2224', device: 'iPad', diagonal: '10.5"', width: 1668, height: 2224 },
+  { id: 'ipad-10-5-2224x1668', device: 'iPad', diagonal: '10.5"', width: 2224, height: 1668 },
+
+  // iPad 9.7"
+  { id: 'ipad-9-7-1536x2008', device: 'iPad', diagonal: '9.7"', width: 1536, height: 2008 },
+  { id: 'ipad-9-7-1536x2048', device: 'iPad', diagonal: '9.7"', width: 1536, height: 2048 },
+  { id: 'ipad-9-7-2048x1496', device: 'iPad', diagonal: '9.7"', width: 2048, height: 1496 },
+  { id: 'ipad-9-7-2048x1536', device: 'iPad', diagonal: '9.7"', width: 2048, height: 1536 },
+  { id: 'ipad-9-7-768x1004', device: 'iPad', diagonal: '9.7"', width: 768, height: 1004 },
+  { id: 'ipad-9-7-768x1024', device: 'iPad', diagonal: '9.7"', width: 768, height: 1024 },
+  { id: 'ipad-9-7-1024x748', device: 'iPad', diagonal: '9.7"', width: 1024, height: 748 },
+  { id: 'ipad-9-7-1024x768', device: 'iPad', diagonal: '9.7"', width: 1024, height: 768 },
+
+  // Apple Watch
+  { id: 'watch-ultra-3-422x514', device: 'Apple Watch', diagonal: 'Ultra 3', width: 422, height: 514 },
+  { id: 'watch-ultra-3-410x502', device: 'Apple Watch', diagonal: 'Ultra 3', width: 410, height: 502 },
+  { id: 'watch-series-11-416x496', device: 'Apple Watch', diagonal: 'Series 11', width: 416, height: 496 },
+  { id: 'watch-series-9-396x484', device: 'Apple Watch', diagonal: 'Series 9', width: 396, height: 484 },
+  { id: 'watch-series-6-368x448', device: 'Apple Watch', diagonal: 'Series 6', width: 368, height: 448 },
+  { id: 'watch-series-3-312x390', device: 'Apple Watch', diagonal: 'Series 3', width: 312, height: 390 },
+];
 
 export default function App() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [selectedResolutions, setSelectedResolutions] = useState<string[]>([
-    '6.9-1', // Default to mandatory 6.9" resolution
+    'iphone-6-9-1260x2736', // Default to one of the 6.9" iPhone resolutions
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -44,19 +104,37 @@ export default function App() {
   };
 
   const handleResolutionToggle = (resolutionId: string) => {
+    setSelectedResolutions(prev =>
+      prev.includes(resolutionId)
+        ? prev.filter(id => id !== resolutionId)
+        : [...prev, resolutionId]
+    );
+    setIsCompleted(false);
+  };
+
+  const handleDiagonalToggle = (device: Resolution['device'], diagonal: string) => {
+    const idsForDiagonal = AVAILABLE_RESOLUTIONS
+      .filter(r => r.device === device && r.diagonal === diagonal)
+      .map(r => r.id);
+
     setSelectedResolutions(prev => {
-      if (prev.includes(resolutionId)) {
-        if (
-          MANDATORY_RESOLUTION_IDS.includes(resolutionId) &&
-          !prev.some(id => id !== resolutionId && MANDATORY_RESOLUTION_IDS.includes(id))
-        ) {
-          alert('Минимум одно разрешение 6.9" должно оставаться выбранным для публикации в App Store.');
-          return prev;
-        }
-        return prev.filter(id => id !== resolutionId);
+      const allSelected = idsForDiagonal.every(id => prev.includes(id));
+      if (allSelected) {
+        return prev.filter(id => !idsForDiagonal.includes(id));
       }
-      return [...prev, resolutionId];
+      return Array.from(new Set([...prev, ...idsForDiagonal]));
     });
+    setIsCompleted(false);
+  };
+
+  const handleSelectAll = () => {
+    const areAllSelected = selectedResolutions.length === AVAILABLE_RESOLUTIONS.length;
+    if (areAllSelected) {
+      setSelectedResolutions([]);
+    } else {
+      setSelectedResolutions(AVAILABLE_RESOLUTIONS.map(r => r.id));
+    }
+    setIsCompleted(false);
   };
 
   const handleConvert = async () => {
@@ -73,17 +151,18 @@ export default function App() {
         selectedResolutions.includes(r.id)
       );
 
-      await processImages(uploadedFiles, resolutionsToProcess, (progress) => {
-        setProgress(progress);
+      await processImages(uploadedFiles, resolutionsToProcess, (progressValue) => {
+        setProgress(progressValue);
       });
 
+      setProgress(100);
       setIsCompleted(true);
     } catch (error) {
       console.error('Error processing images:', error);
       alert('Произошла ошибка при обработке изображений. Пожалуйста, попробуйте снова.');
+      setProgress(0);
     } finally {
       setIsProcessing(false);
-      setProgress(0);
     }
   };
 
@@ -104,7 +183,7 @@ export default function App() {
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Конвертируйте скриншоты в требуемые разрешения для App Store Connect.
-            Загрузите до 10 изображений и выберите целевые разрешения iPhone.
+            Загрузите до 10 изображений и выберите целевые разрешения iPhone, iPad и Apple Watch.
           </p>
         </div>
 
@@ -138,10 +217,12 @@ export default function App() {
                 resolutions={AVAILABLE_RESOLUTIONS}
                 selectedResolutions={selectedResolutions}
                 onToggle={handleResolutionToggle}
+                onToggleDiagonal={handleDiagonalToggle}
+                onToggleAll={handleSelectAll}
               />
               <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                <p className="text-blue-900">
-                  <span className="font-medium">Примечание:</span> Разрешение 6.9" является обязательным для новых приложений в App Store Connect (декабрь 2025).
+                <p className="text-blue-900 space-y-1">
+                  <span className="font-medium">Подсказка:</span> выберите диагональ или нажмите «Выбрать все», чтобы подготовить полный набор для App Store и отзывов Apple.
                 </p>
               </div>
             </div>

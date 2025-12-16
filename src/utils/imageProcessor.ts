@@ -8,6 +8,7 @@ export async function processImages(
 ): Promise<void> {
   const zip = new JSZip();
   const totalOperations = files.length * resolutions.length;
+  const totalWorkUnits = totalOperations + 1; // include zip generation as a step
   let completedOperations = 0;
 
   for (const file of files) {
@@ -29,16 +30,23 @@ export async function processImages(
 
       // Add to zip with naming convention: {original_name}_{width}x{height}.{ext}
       const fileName = `${originalFileName}_${resolution.width}x${resolution.height}.${outputExtension}`;
-      zip.file(fileName, processedBlob);
+      const folderPath = `${resolution.device}/${resolution.diagonal}`;
+      const targetFolder = zip.folder(folderPath) ?? zip;
+      targetFolder.file(fileName, processedBlob);
 
       // Update progress
       completedOperations++;
-      onProgress((completedOperations / totalOperations) * 100);
+      onProgress((completedOperations / totalWorkUnits) * 100);
     }
   }
 
   // Generate ZIP file
-  const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+  const zipBlob = await zip.generateAsync(
+    { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+    (metadata) => {
+      onProgress(((totalOperations + metadata.percent / 100) / totalWorkUnits) * 100);
+    }
+  );
 
   // Download ZIP file
   const url = URL.createObjectURL(zipBlob);
@@ -116,7 +124,7 @@ function resizeImage(
     ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 
     // Convert to blob
-    const quality = mimeType === 'image/png' ? undefined : 0.92; // High quality for JPEG
+    const quality = mimeType === 'image/png' ? undefined : 1; // Max quality for JPEG
 
     canvas.toBlob(
       (blob) => {
