@@ -20,6 +20,15 @@ interface ImageUploaderProps {
   isDarkMode?: boolean;
 }
 
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
+
 export function ImageUploader({
   onFilesSelected,
   uploadedFiles,
@@ -230,13 +239,18 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
       </button>
 
       {/* Filename */}
-      <div className={`mt-2 rounded-lg px-3 py-2 ${
+      <div className={`mt-2 rounded-lg px-3 py-2 text-center ${
         isDarkMode ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'
       }`}>
-        <p className={`text-sm truncate text-center ${
+        <p className={`text-sm truncate ${
           isDarkMode ? 'text-gray-300' : 'text-gray-700'
         }`}>
           {file.name}
+        </p>
+        <p className={`text-xs ${
+          isDarkMode ? 'text-gray-500' : 'text-gray-500'
+        }`}>
+          {formatBytes(file.size)}
         </p>
       </div>
     </div>

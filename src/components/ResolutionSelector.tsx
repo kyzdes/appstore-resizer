@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react';
 import type { Resolution } from '../App';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 interface ResolutionSelectorProps {
   resolutions: Resolution[];
@@ -60,104 +61,109 @@ export function ResolutionSelector({
         </button>
       </div>
 
-      {Object.entries(groupedResolutions).map(([device, diagonals]) => (
-        <div key={device} className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-800 font-medium'}>{device}</h3>
-            <span className={isDarkMode ? 'text-sm text-gray-400' : 'text-sm text-gray-500'}>
-              {Object.values(diagonals).flat().filter(r => selectedResolutions.includes(r.id)).length}/
-              {Object.values(diagonals).flat().length}
-            </span>
-          </div>
+      <Accordion type="multiple" defaultValue={Object.keys(groupedResolutions)} className="w-full">
+        {Object.entries(groupedResolutions).map(([device, diagonals]) => (
+          <AccordionItem key={device} value={device}>
+            <AccordionTrigger>
+              <div className="flex items-center justify-between w-full">
+                <h3 className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-800 font-medium'}>{device}</h3>
+                <span className={isDarkMode ? 'text-sm text-gray-400' : 'text-sm text-gray-500'}>
+                  {Object.values(diagonals).flat().filter(r => selectedResolutions.includes(r.id)).length}/
+                  {Object.values(diagonals).flat().length}
+                </span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-3">
+                {Object.entries(diagonals).map(([diagonal, diagonalResolutions]) => {
+                  const selectedCount = diagonalResolutions.filter(r => selectedResolutions.includes(r.id)).length;
+                  const allDiagonalSelected = selectedCount === diagonalResolutions.length;
 
-          <div className="space-y-3">
-            {Object.entries(diagonals).map(([diagonal, diagonalResolutions]) => {
-              const selectedCount = diagonalResolutions.filter(r => selectedResolutions.includes(r.id)).length;
-              const allDiagonalSelected = selectedCount === diagonalResolutions.length;
-
-              return (
-                <div
-                  key={`${device}-${diagonal}`}
-                  className={`rounded-xl p-4 space-y-3 border ${
-                    isDarkMode ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-900 font-medium'}>
-                        {diagonal}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>
-                        {texts.countLabel(selectedCount, diagonalResolutions.length)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => onToggleDiagonal(device as Resolution['device'], diagonal)}
-                      className={`text-sm font-semibold px-4 py-2 rounded-full border transition-colors ${
-                        isDarkMode
-                          ? 'border-[#24304a] bg-[#1f2937] text-blue-100 hover:border-blue-400 hover:text-white'
-                          : 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:text-blue-800'
+                  return (
+                    <div
+                      key={`${device}-${diagonal}`}
+                      className={`rounded-xl p-4 space-y-3 border ${
+                        isDarkMode ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'
                       }`}
                     >
-                      {allDiagonalSelected ? texts.clearDiagonal : texts.selectDiagonal}
-                    </button>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {diagonalResolutions.map(resolution => {
-                      const isSelected = selectedResolutions.includes(resolution.id);
-                      const isLandscape = resolution.width > resolution.height;
-
-                      return (
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <p className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-900 font-medium'}>
+                            {diagonal}
+                          </p>
+                          <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>
+                            {texts.countLabel(selectedCount, diagonalResolutions.length)}
+                          </p>
+                        </div>
                         <button
-                          key={resolution.id}
-                          onClick={() => onToggle(resolution.id)}
-                          className={`relative p-4 rounded-xl border-2 transition-all text-left ${
-                            isSelected
-                              ? isDarkMode
-                                ? 'border-blue-500 bg-slate-800'
-                                : 'border-blue-500 bg-blue-50'
-                              : isDarkMode
-                                ? 'border-slate-800 bg-slate-900 hover:border-slate-700'
-                                : 'border-gray-200 bg-white hover:border-gray-300'
+                          onClick={() => onToggleDiagonal(device as Resolution['device'], diagonal)}
+                          className={`text-sm font-semibold px-4 py-2 rounded-full border transition-colors ${
+                            isDarkMode
+                              ? 'border-[#24304a] bg-[#1f2937] text-blue-100 hover:border-blue-400 hover:text-white'
+                              : 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:text-blue-800'
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <p className={isDarkMode ? 'text-gray-100' : 'text-gray-900'}>
-                                  {resolution.width} × {resolution.height}
-                                </p>
-                                <span className={isDarkMode ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full' : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full'}>
-                                  {isLandscape ? texts.orientation.landscape : texts.orientation.portrait}
-                                </span>
-                              </div>
-                              <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
-                                {(resolution.width * resolution.height / 1000000).toFixed(1)} MP
-                              </p>
-                            </div>
-                            <div
-                              className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
+                          {allDiagonalSelected ? texts.clearDiagonal : texts.selectDiagonal}
+                        </button>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        {diagonalResolutions.map(resolution => {
+                          const isSelected = selectedResolutions.includes(resolution.id);
+                          const isLandscape = resolution.width > resolution.height;
+
+                          return (
+                            <button
+                              key={resolution.id}
+                              onClick={() => onToggle(resolution.id)}
+                              className={`relative p-4 rounded-xl border-2 transition-all text-left ${
                                 isSelected
-                                  ? 'border-blue-500 bg-blue-500'
+                                  ? isDarkMode
+                                    ? 'border-blue-500 bg-slate-800'
+                                    : 'border-blue-500 bg-blue-50'
                                   : isDarkMode
-                                    ? 'border-slate-700 bg-slate-900'
-                                    : 'border-gray-300 bg-white'
+                                    ? 'border-slate-800 bg-slate-900 hover:border-slate-700'
+                                    : 'border-gray-200 bg-white hover:border-gray-300'
                               }`}
                             >
-                              {isSelected && <Check className="w-4 h-4 text-white" />}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <p className={isDarkMode ? 'text-gray-100' : 'text-gray-900'}>
+                                      {resolution.width} × {resolution.height}
+                                    </p>
+                                    <span className={isDarkMode ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full' : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full'}>
+                                      {isLandscape ? texts.orientation.landscape : texts.orientation.portrait}
+                                    </span>
+                                  </div>
+                                  <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
+                                    {(resolution.width * resolution.height / 1000000).toFixed(1)} MP
+                                  </p>
+                                </div>
+                                <div
+                                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
+                                    isSelected
+                                      ? 'border-blue-500 bg-blue-500'
+                                      : isDarkMode
+                                        ? 'border-slate-700 bg-slate-900'
+                                        : 'border-gray-300 bg-white'
+                                  }`}
+                                >
+                                  {isSelected && <Check className="w-4 h-4 text-white" />}
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </div>
   );
 }
