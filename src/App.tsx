@@ -3,7 +3,7 @@ import { ImageUploader } from './components/ImageUploader';
 import { ResolutionSelector } from './components/ResolutionSelector';
 import { ProgressIndicator } from './components/ProgressIndicator';
 import { processImages } from './utils/imageProcessor';
-import { Smartphone, Download, CheckCircle2 } from 'lucide-react';
+import { Smartphone, Download, CheckCircle2, Sun, Moon } from 'lucide-react';
 
 export interface Resolution {
   id: string;
@@ -226,35 +226,27 @@ export default function App() {
 
   const theme = useMemo(
     () => ({
+      // Фон страницы - neomorphic base color с легким градиентом
       pageBg: isDarkMode
-        ? 'bg-gradient-to-br from-slate-900 via-slate-950 to-black'
-        : 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
-      card: isDarkMode
-        ? 'bg-slate-900 border border-slate-800 shadow-sm'
-        : 'bg-white border border-gray-200 shadow-sm',
+        ? 'min-h-screen relative'
+        : 'min-h-screen relative',
+      pageBgStyle: isDarkMode
+        ? { background: 'radial-gradient(circle at 20% 20%, #1f2937, #0b0f19), radial-gradient(circle at 80% 0%, #0f172a, #0b0f19)' }
+        : { background: 'radial-gradient(circle at 20% 20%, #eef2ff, #f9fafb)' },
+
+      // Neomorphic карточки
+      neumorphicCard: 'neumorphic-raised rounded-2xl p-6',
+      neumorphicCardHover: 'neumorphic-raised neumorphic-raised-hover rounded-2xl p-6',
+      neumorphicButton: 'neumorphic-raised-sm rounded-xl px-4 py-2 transition-all duration-300',
+      neumorphicInset: 'neumorphic-inset rounded-xl p-4',
+
+      // Text colors
       textPrimary: isDarkMode ? 'text-gray-100' : 'text-gray-900',
-      textSecondary: isDarkMode ? 'text-gray-400' : 'text-gray-600',
-      textMuted: isDarkMode ? 'text-gray-500' : 'text-gray-500',
-      divider: isDarkMode ? 'border-slate-800' : 'border-gray-100',
-      infoBox: isDarkMode
-        ? 'bg-slate-800 border border-slate-700 text-gray-200'
-        : 'bg-blue-50 border border-blue-100 text-blue-900',
-      tag: isDarkMode
-        ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full'
-        : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full',
-      primaryButton: isDarkMode
-        ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-slate-700 disabled:text-gray-400'
-        : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-white',
-      summaryCard: isDarkMode
-        ? 'bg-slate-900 border border-slate-800 shadow-sm'
-        : 'bg-white border border-gray-200 shadow-sm',
-      accentIcon: isDarkMode ? 'bg-blue-600' : 'bg-blue-600',
-      progress: {
-        track: isDarkMode ? 'bg-slate-800' : 'bg-gray-200',
-        fill: 'bg-blue-600',
-        text: isDarkMode ? 'text-gray-200' : 'text-gray-900',
-        label: isDarkMode ? 'text-gray-300' : 'text-gray-700',
-      },
+      textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-700',
+      textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-600',
+
+      // Divider
+      divider: 'neumorphic-divider',
     }),
     [isDarkMode]
   );
@@ -334,69 +326,78 @@ export default function App() {
   const totalOutputImages = uploadedFiles.length * selectedResolutions.length;
 
   return (
-    <div className={`min-h-screen ${theme.pageBg} ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+    <div
+      className={`${theme.pageBg} ${isDarkMode ? 'theme-dark text-gray-100' : 'theme-light text-gray-900'}`}
+      style={theme.pageBgStyle}
+    >
       <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`${theme.accentIcon} p-3 rounded-2xl`}>
-                <Smartphone className="w-8 h-8 text-white" />
+        <div className="mb-12 relative z-10">
+          {/* Top bar with controls */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              {/* Logo with neomorphic effect */}
+              <div className="neumorphic-raised p-3 rounded-2xl relative">
+                <div className="absolute inset-0 neumorphic-gradient-primary rounded-2xl opacity-90" />
+                <Smartphone className="w-8 h-8 text-white relative z-10" />
               </div>
-              <div className="flex items-center gap-2">
+
+              {/* Segmented control for Language */}
+              <div className="neumorphic-raised rounded-full p-1 inline-flex gap-1">
                 <button
                   onClick={() => setLocale('ru')}
-                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     locale === 'ru'
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : isDarkMode
-                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                      ? 'neumorphic-gradient-primary text-white'
+                      : 'neumorphic-flat hover:neumorphic-raised-sm ' + theme.textSecondary
                   }`}
                 >
                   RU
                 </button>
                 <button
                   onClick={() => setLocale('en')}
-                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     locale === 'en'
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : isDarkMode
-                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                      ? 'neumorphic-gradient-primary text-white'
+                      : 'neumorphic-flat hover:neumorphic-raised-sm ' + theme.textSecondary
                   }`}
                 >
                   EN
                 </button>
               </div>
             </div>
+
+            {/* Dark mode toggle */}
             <button
               onClick={() => setIsDarkMode(prev => !prev)}
-              className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
-                isDarkMode
-                  ? 'bg-slate-800 border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                  : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700 bg-white'
-              }`}
+              className="neumorphic-raised rounded-full p-3 transition-all duration-300 neumorphic-raised-hover hover:rotate-180"
+              aria-label="Toggle theme"
             >
-              {isDarkMode ? 'Light' : 'Dark'}
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-yellow-500 transition-transform duration-500" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-400 transition-transform duration-500" />
+              )}
             </button>
           </div>
-          <div className="text-center">
-            <h1 className={`${theme.textPrimary} mb-2`}>
+
+          {/* Title and subtitle - centered */}
+          <div className="text-center space-y-4">
+            <h1 className={`text-4xl font-bold tracking-tight ${theme.textPrimary}`}>
               {t.title}
             </h1>
-            <p className={`${theme.textSecondary} max-w-2xl mx-auto`}>
+            <p className={`text-lg max-w-3xl mx-auto leading-relaxed ${theme.textSecondary}`}>
               {t.subtitle}
             </p>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 relative z-10">
           {/* Left Column - Upload & Resolutions */}
           <div className="lg:col-span-2 space-y-6">
             {/* Upload Section */}
-            <div className={`${theme.card} rounded-2xl p-6`}>
+            <div className={theme.neumorphicCard}>
               <h2 className={`${theme.textPrimary} mb-4`}>
                 {t.steps.upload}
               </h2>
@@ -417,7 +418,7 @@ export default function App() {
             </div>
 
             {/* Resolution Selection */}
-            <div className={`${theme.card} rounded-2xl p-6`}>
+            <div className={theme.neumorphicCard}>
               <h2 className={`${theme.textPrimary} mb-4`}>
                 {t.steps.resolutions}
               </h2>
@@ -440,57 +441,93 @@ export default function App() {
 
           {/* Right Column - Summary & Actions */}
           <div className="lg:col-span-1">
-            <div className={`${theme.summaryCard} rounded-2xl p-6 sticky top-8`}>
-              <h2 className={`${theme.textPrimary} mb-6`}>
-                {t.summaryTitle}
-              </h2>
-
-              <div className="space-y-4 mb-6">
-                <div className={`flex items-center justify-between py-3 border-b ${theme.divider}`}>
-                  <span className={theme.textSecondary}>{t.summaryUploaded}</span>
-                  <span className={theme.textPrimary}>{uploadedFiles.length}</span>
-                </div>
-                <div className={`flex items-center justify-between py-3 border-b ${theme.divider}`}>
-                  <span className={theme.textSecondary}>{t.summarySelected}</span>
-                  <span className={theme.textPrimary}>{selectedResolutions.length}</span>
-                </div>
-                <div className="flex items-center justify-between py-3">
-                  <span className={theme.textSecondary}>{t.summaryTotal}</span>
-                  <span className={theme.textPrimary}>{totalOutputImages}</span>
+            <div className={`${theme.neumorphicCard} lg:sticky lg:top-8 space-y-6`}>
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <h2 className={`text-xl font-semibold ${theme.textPrimary}`}>
+                  {t.summaryTitle}
+                </h2>
+                <div className="neumorphic-gradient-primary rounded-full px-4 py-1.5">
+                  <span className="text-sm font-medium text-white">
+                    Ready
+                  </span>
                 </div>
               </div>
 
+              {/* Stats with neumorphic dividers - БЕЗ эмодзи */}
+              <div className="space-y-4">
+                {[
+                  { label: t.summaryUploaded, value: uploadedFiles.length },
+                  { label: t.summarySelected, value: selectedResolutions.length },
+                  { label: t.summaryTotal, value: totalOutputImages }
+                ].map((stat, idx) => (
+                  <div key={idx}>
+                    <div className="flex items-center justify-between py-3">
+                      <span className={theme.textSecondary}>{stat.label}</span>
+                      <span className={`text-2xl font-bold ${theme.textPrimary}`}>
+                        {stat.value}
+                      </span>
+                    </div>
+                    {/* Divider - только между элементами, не после последнего */}
+                    {idx < 2 && <div className={theme.divider} />}
+                  </div>
+                ))}
+              </div>
+
+              {/* Progress indicator */}
               {isProcessing && (
-                <div className="mb-6">
-                  <ProgressIndicator progress={progress} label={t.processingLabel} isDarkMode={isDarkMode} />
+                <div className="neumorphic-inset rounded-xl p-4">
+                  <ProgressIndicator
+                    progress={progress}
+                    label={t.processingLabel}
+                    isDarkMode={isDarkMode}
+                  />
                 </div>
               )}
 
+              {/* Success message */}
               {isCompleted && (
-                <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${isDarkMode ? 'bg-green-900/30 border-green-700 text-green-200' : 'bg-green-50 border-green-200'}`}>
-                  <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className={isDarkMode ? 'text-green-200' : 'text-green-900'}>
-                      {t.readyTitle}
-                    </p>
-                    <p className={isDarkMode ? 'text-green-200/80 mt-1' : 'text-green-700 mt-1'}>
-                      {t.readySubtitle}
-                    </p>
+                <div className="neumorphic-raised rounded-xl p-4 relative overflow-hidden">
+                  <div className="absolute inset-0 neumorphic-gradient-accent opacity-10" />
+                  <div className="relative z-10 flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-green-700 dark:text-green-300">
+                        {t.readyTitle}
+                      </p>
+                      <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                        {t.readySubtitle}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
 
+              {/* CTA Button - Gradient with neomorphic shadow */}
               <button
                 onClick={handleConvert}
                 disabled={uploadedFiles.length === 0 || selectedResolutions.length === 0 || isProcessing}
-                className={`w-full py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${theme.primaryButton}`}
+                className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group ${
+                  uploadedFiles.length === 0 || selectedResolutions.length === 0 || isProcessing
+                    ? 'neumorphic-flat text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                    : 'neumorphic-gradient-primary text-white hover:shadow-2xl hover:-translate-y-1 active:translate-y-0'
+                }`}
               >
-                <Download className="w-5 h-5" />
-                {isProcessing ? t.processing : t.convert}
+                {!(uploadedFiles.length === 0 || selectedResolutions.length === 0 || isProcessing) && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                )}
+
+                <div className="relative z-10 flex items-center justify-center gap-3">
+                  <Download className={`w-5 h-5 transition-transform duration-300 ${
+                    !isProcessing ? 'group-hover:animate-bounce' : ''
+                  }`} />
+                  <span>{isProcessing ? t.processing : t.convert}</span>
+                </div>
               </button>
 
-              <p className={`${theme.textSecondary} mt-4 text-center`}>
-                {t.localNote}
+              {/* Local processing note */}
+              <p className={`text-sm text-center ${theme.textSecondary}`}>
+                🔒 {t.localNote}
               </p>
             </div>
           </div>
