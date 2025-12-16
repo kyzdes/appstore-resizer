@@ -227,26 +227,26 @@ export default function App() {
   const theme = useMemo(
     () => ({
       pageBg: isDarkMode
-        ? 'bg-gradient-to-br from-slate-900 via-slate-950 to-black'
+        ? 'bg-gradient-to-br from-[#0b1020] via-[#0f172a] to-[#0b1020]'
         : 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
       card: isDarkMode
-        ? 'bg-slate-900 border border-slate-800 shadow-sm'
+        ? 'bg-[#0f172a] border border-[#1f2937] shadow-sm'
         : 'bg-white border border-gray-200 shadow-sm',
       textPrimary: isDarkMode ? 'text-gray-100' : 'text-gray-900',
-      textSecondary: isDarkMode ? 'text-gray-400' : 'text-gray-600',
-      textMuted: isDarkMode ? 'text-gray-500' : 'text-gray-500',
-      divider: isDarkMode ? 'border-slate-800' : 'border-gray-100',
+      textSecondary: isDarkMode ? 'text-gray-300' : 'text-gray-600',
+      textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-500',
+      divider: isDarkMode ? 'border-[#1f2937]' : 'border-gray-100',
       infoBox: isDarkMode
-        ? 'bg-slate-800 border border-slate-700 text-gray-200'
+        ? 'bg-[#111827] border border-[#1f2937] text-gray-200'
         : 'bg-blue-50 border border-blue-100 text-blue-900',
       tag: isDarkMode
-        ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full'
+        ? 'text-xs text-gray-200 px-2 py-0.5 bg-[#111827] rounded-full'
         : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full',
       primaryButton: isDarkMode
-        ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-slate-700 disabled:text-gray-400'
+        ? 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-700 disabled:text-gray-400'
         : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-white',
       summaryCard: isDarkMode
-        ? 'bg-slate-900 border border-slate-800 shadow-sm'
+        ? 'bg-[#0f172a] border border-[#1f2937] shadow-sm'
         : 'bg-white border border-gray-200 shadow-sm',
       accentIcon: isDarkMode ? 'bg-blue-600' : 'bg-blue-600',
       progress: {
@@ -343,27 +343,27 @@ export default function App() {
               <div className={`${theme.accentIcon} p-3 rounded-2xl`}>
                 <Smartphone className="w-8 h-8 text-white" />
               </div>
-              <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 rounded-full px-1 py-1 ${isDarkMode ? 'bg-[#111827] border border-[#1f2937]' : 'bg-white border border-gray-200 shadow-sm'}`}>
                 <button
                   onClick={() => setLocale('ru')}
-                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                  className={`px-4 py-2 rounded-full text-sm font-semibold ${
                     locale === 'ru'
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? 'bg-blue-600 text-white shadow-sm'
                       : isDarkMode
-                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                        ? 'text-gray-200 hover:bg-[#1f2937]'
+                        : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   RU
                 </button>
                 <button
                   onClick={() => setLocale('en')}
-                  className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+                  className={`px-4 py-2 rounded-full text-sm font-semibold ${
                     locale === 'en'
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? 'bg-blue-600 text-white shadow-sm'
                       : isDarkMode
-                        ? 'border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                        : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700'
+                        ? 'text-gray-200 hover:bg-[#1f2937]'
+                        : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   EN
@@ -372,10 +372,10 @@ export default function App() {
             </div>
             <button
               onClick={() => setIsDarkMode(prev => !prev)}
-              className={`px-3 py-1.5 rounded-lg border text-sm font-medium ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold ${
                 isDarkMode
-                  ? 'bg-slate-800 border-slate-700 text-gray-200 hover:border-blue-400 hover:text-blue-200'
-                  : 'border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700 bg-white'
+                  ? 'bg-[#111827] border border-[#1f2937] text-gray-100 hover:border-blue-400 hover:text-white'
+                  : 'bg-white border border-gray-200 text-gray-700 hover:border-blue-300 hover:text-blue-700 shadow-sm'
               }`}
             >
               {isDarkMode ? 'Light' : 'Dark'}

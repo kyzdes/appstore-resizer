@@ -109,8 +109,8 @@ export function ImageUploader({
         onDrop={handleDrop}
         className={`rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 relative overflow-hidden group ${
           isDarkMode
-            ? 'bg-slate-900 border border-slate-800 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]'
-            : 'bg-white border border-gray-200 shadow-sm'
+            ? 'bg-[#111827] shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]'
+            : 'bg-gray-100 shadow-sm'
         } ${isDragging ? 'scale-[1.02] ring-2 ring-blue-500/60' : ''}`}
       >
         {/* Gradient overlay on drag */}

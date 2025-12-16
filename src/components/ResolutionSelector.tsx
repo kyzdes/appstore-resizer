@@ -50,10 +50,10 @@ export function ResolutionSelector({
         <p className={isDarkMode ? 'text-gray-200' : 'text-gray-700'}>{texts.quickSelect}</p>
         <button
           onClick={onToggleAll}
-          className={`text-sm font-medium px-3 py-1.5 rounded-lg border ${
+          className={`text-sm font-semibold px-4 py-2 rounded-full border transition-colors ${
             isDarkMode
-              ? 'border-slate-700 text-blue-200 hover:border-blue-400 hover:text-blue-300 bg-slate-900'
-              : 'border-blue-100 text-blue-600 hover:border-blue-300 hover:text-blue-700 bg-blue-50'
+              ? 'border-[#24304a] bg-[#1f2937] text-blue-100 hover:border-blue-400 hover:text-white'
+              : 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:text-blue-800'
           }`}
         >
           {allSelected ? texts.clearAll : texts.selectAll}
@@ -93,10 +93,10 @@ export function ResolutionSelector({
                     </div>
                     <button
                       onClick={() => onToggleDiagonal(device as Resolution['device'], diagonal)}
-                      className={`text-sm font-medium px-3 py-1.5 rounded-lg border ${
+                      className={`text-sm font-semibold px-4 py-2 rounded-full border transition-colors ${
                         isDarkMode
-                          ? 'border-slate-700 text-blue-200 hover:border-blue-400 hover:text-blue-300 bg-slate-900'
-                          : 'border-blue-100 text-blue-600 hover:border-blue-300 hover:text-blue-700 bg-blue-50'
+                          ? 'border-[#24304a] bg-[#1f2937] text-blue-100 hover:border-blue-400 hover:text-white'
+                          : 'border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:text-blue-800'
                       }`}
                     >
                       {allDiagonalSelected ? texts.clearDiagonal : texts.selectDiagonal}
