@@ -109,7 +109,7 @@ export function ImageUploader({
         onDrop={handleDrop}
         className={`rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 relative overflow-hidden group ${
           isDarkMode
-            ? 'bg-gray-900 border border-gray-800 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]'
+            ? 'bg-slate-900 border border-slate-800 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]'
             : 'bg-white border border-gray-200 shadow-sm'
         } ${isDragging ? 'scale-[1.02] ring-2 ring-blue-500/60' : ''}`}
       >
@@ -198,7 +198,7 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
       <div
         className={`rounded-xl overflow-hidden aspect-[9/16] relative transition-all duration-300 ${
           isDarkMode
-            ? 'bg-gray-900 border border-gray-800 shadow-[0_15px_45px_-30px_rgba(0,0,0,0.9)]'
+            ? 'bg-slate-900 border border-slate-800 shadow-[0_15px_45px_-30px_rgba(0,0,0,0.9)]'
             : 'bg-gray-50 border border-gray-200 shadow-sm'
         }`}
       >
@@ -210,7 +210,7 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
           />
         ) : (
           <div className={`w-full h-full flex items-center justify-center ${
-            isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+            isDarkMode ? 'bg-slate-800' : 'bg-gray-100'
           }`}>
             <ImageIcon className="w-8 h-8 text-gray-400" />
           </div>
@@ -231,7 +231,7 @@ function FilePreview({ file, onRemove, isDarkMode }: FilePreviewProps) {
 
       {/* Filename */}
       <div className={`mt-2 rounded-lg px-3 py-2 ${
-        isDarkMode ? 'bg-gray-900 border border-gray-800' : 'bg-white border border-gray-200'
+        isDarkMode ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-gray-200'
       }`}>
         <p className={`text-sm truncate text-center ${
           isDarkMode ? 'text-gray-300' : 'text-gray-700'
