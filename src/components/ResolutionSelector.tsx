@@ -45,119 +45,150 @@ export function ResolutionSelector({
   const allSelected = selectedResolutions.length === resolutions.length;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className={isDarkMode ? 'text-gray-200' : 'text-gray-700'}>{texts.quickSelect}</p>
+    <div className="space-y-8">
+      {/* Top-level quick actions */}
+      <div className="flex items-center justify-between pb-6">
+        <div className="flex items-center gap-3">
+          <div className="neumorphic-raised px-5 py-2 rounded-xl">
+            <span className={`text-sm font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+              {texts.countLabel(selectedResolutions.length, resolutions.length)}
+            </span>
+          </div>
+        </div>
         <button
           onClick={onToggleAll}
-          className={`text-sm font-medium px-3 py-1.5 rounded-lg border ${
-            isDarkMode
-              ? 'border-slate-700 text-blue-200 hover:border-blue-400 hover:text-blue-300 bg-slate-900'
-              : 'border-blue-100 text-blue-600 hover:border-blue-300 hover:text-blue-700 bg-blue-50'
-          }`}
+          className="neumorphic-button hover:neumorphic-raised-hover text-sm font-medium px-5 py-2.5"
         >
           {allSelected ? texts.clearAll : texts.selectAll}
         </button>
       </div>
 
-      {Object.entries(groupedResolutions).map(([device, diagonals]) => (
-        <div key={device} className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-800 font-medium'}>{device}</h3>
-            <span className={isDarkMode ? 'text-sm text-gray-400' : 'text-sm text-gray-500'}>
-              {Object.values(diagonals).flat().filter(r => selectedResolutions.includes(r.id)).length}/
-              {Object.values(diagonals).flat().length}
-            </span>
-          </div>
+      {/* Divider */}
+      <div className="neumorphic-divider" />
 
-          <div className="space-y-3">
-            {Object.entries(diagonals).map(([diagonal, diagonalResolutions]) => {
-              const selectedCount = diagonalResolutions.filter(r => selectedResolutions.includes(r.id)).length;
-              const allDiagonalSelected = selectedCount === diagonalResolutions.length;
+      {/* Device Groups - Simple Grid Layout */}
+      <div className="space-y-10">
+        {Object.entries(groupedResolutions).map(([device, diagonals]) => {
+          const deviceResolutions = Object.values(diagonals).flat();
+          const selectedCount = deviceResolutions.filter(r => selectedResolutions.includes(r.id)).length;
 
-              return (
-                <div
-                  key={`${device}-${diagonal}`}
-                  className={`rounded-xl p-4 space-y-3 border ${
-                    isDarkMode ? 'border-slate-800 bg-slate-900' : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <p className={isDarkMode ? 'text-gray-100 font-medium' : 'text-gray-900 font-medium'}>
-                        {diagonal}
-                      </p>
-                      <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>
-                        {texts.countLabel(selectedCount, diagonalResolutions.length)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => onToggleDiagonal(device as Resolution['device'], diagonal)}
-                      className={`text-sm font-medium px-3 py-1.5 rounded-lg border ${
-                        isDarkMode
-                          ? 'border-slate-700 text-blue-200 hover:border-blue-400 hover:text-blue-300 bg-slate-900'
-                          : 'border-blue-100 text-blue-600 hover:border-blue-300 hover:text-blue-700 bg-blue-50'
-                      }`}
-                    >
-                      {allDiagonalSelected ? texts.clearDiagonal : texts.selectDiagonal}
-                    </button>
-                  </div>
+          return (
+            <div key={device} className="space-y-5">
+              {/* Device Header */}
+              <div className="flex items-center justify-between">
+                <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                  {device}
+                </h3>
+                <div className="neumorphic-raised px-4 py-1.5 rounded-full">
+                  <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                    {selectedCount}/{deviceResolutions.length}
+                  </span>
+                </div>
+              </div>
 
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {diagonalResolutions.map(resolution => {
-                      const isSelected = selectedResolutions.includes(resolution.id);
-                      const isLandscape = resolution.width > resolution.height;
+              {/* Diagonal Groups */}
+              <div className="space-y-7">
+                {Object.entries(diagonals).map(([diagonal, diagonalResolutions]) => {
+                  const selectedDiagonalCount = diagonalResolutions.filter(r => selectedResolutions.includes(r.id)).length;
+                  const allDiagonalSelected = selectedDiagonalCount === diagonalResolutions.length;
 
-                      return (
-                        <button
-                          key={resolution.id}
-                          onClick={() => onToggle(resolution.id)}
-                          className={`relative p-4 rounded-xl border-2 transition-all text-left ${
-                            isSelected
-                              ? isDarkMode
-                                ? 'border-blue-500 bg-slate-800'
-                                : 'border-blue-500 bg-blue-50'
-                              : isDarkMode
-                                ? 'border-slate-800 bg-slate-900 hover:border-slate-700'
-                                : 'border-gray-200 bg-white hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <p className={isDarkMode ? 'text-gray-100' : 'text-gray-900'}>
-                                  {resolution.width} × {resolution.height}
-                                </p>
-                                <span className={isDarkMode ? 'text-xs text-gray-200 px-2 py-0.5 bg-slate-800 rounded-full' : 'text-xs text-gray-500 px-2 py-0.5 bg-gray-100 rounded-full'}>
-                                  {isLandscape ? texts.orientation.landscape : texts.orientation.portrait}
-                                </span>
-                              </div>
-                              <p className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>
-                                {(resolution.width * resolution.height / 1000000).toFixed(1)} MP
-                              </p>
-                            </div>
-                            <div
-                              className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
+                  return (
+                    <div key={`${device}-${diagonal}`} className="space-y-3">
+                      {/* Diagonal Header with action button */}
+                      <div className="neumorphic-raised rounded-xl p-5">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <p className={`font-medium ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                              {diagonal}
+                            </p>
+                            <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                              {texts.countLabel(selectedDiagonalCount, diagonalResolutions.length)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => onToggleDiagonal(device as Resolution['device'], diagonal)}
+                            className="neumorphic-button text-sm font-medium whitespace-nowrap px-4 py-2"
+                          >
+                            {allDiagonalSelected ? texts.clearDiagonal : texts.selectDiagonal}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Resolution Cards Grid */}
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {diagonalResolutions.map(resolution => {
+                          const isSelected = selectedResolutions.includes(resolution.id);
+                          const isLandscape = resolution.width > resolution.height;
+
+                          return (
+                            <button
+                              key={resolution.id}
+                              onClick={() => onToggle(resolution.id)}
+                              className={`relative transition-all duration-300 rounded-xl p-5 text-left ${
                                 isSelected
-                                  ? 'border-blue-500 bg-blue-500'
-                                  : isDarkMode
-                                    ? 'border-slate-700 bg-slate-900'
-                                    : 'border-gray-300 bg-white'
+                                  ? 'neumorphic-active'
+                                  : 'neumorphic-raised hover:neumorphic-raised-hover'
                               }`}
                             >
-                              {isSelected && <Check className="w-4 h-4 text-white" />}
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+                              {/* Gradient accent when selected */}
+                              {isSelected && (
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl pointer-events-none" />
+                              )}
+
+                              {/* Content */}
+                              <div className="relative z-10 flex items-start justify-between gap-3">
+                                <div className="flex-1 space-y-2">
+                                  {/* Resolution */}
+                                  <div className="flex items-center gap-2">
+                                    <span className={`font-mono font-semibold text-base ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                                      {resolution.width} × {resolution.height}
+                                    </span>
+                                  </div>
+
+                                  {/* Metadata - БЕЗ Badge и БЕЗ эмодзи */}
+                                  <div className="flex items-center gap-3">
+                                    <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                      {isLandscape ? texts.orientation.landscape : texts.orientation.portrait}
+                                    </span>
+                                    <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                                      {(resolution.width * resolution.height / 1000000).toFixed(1)} MP
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Selection indicator - checkbox style */}
+                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-300 shrink-0 ${
+                                  isSelected
+                                    ? 'neumorphic-gradient-primary'
+                                    : 'neumorphic-inset-sm'
+                                }`}>
+                                  {isSelected && (
+                                    <Check className="w-4 h-4 text-white" />
+                                  )}
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Divider between diagonal groups */}
+                      {Object.keys(diagonals).indexOf(diagonal) < Object.keys(diagonals).length - 1 && (
+                        <div className="neumorphic-divider my-4" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Divider between device groups */}
+              {Object.keys(groupedResolutions).indexOf(device) < Object.keys(groupedResolutions).length - 1 && (
+                <div className="neumorphic-divider mt-6" />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
