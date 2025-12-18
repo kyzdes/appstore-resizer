@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  appstore-converter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: appstore-converter
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,86 @@
+{
+  "iPhone": {
+    "6.9\"": [
+      { "width": 1260, "height": 2736 },
+      { "width": 2736, "height": 1260 },
+      { "width": 1320, "height": 2868 },
+      { "width": 2868, "height": 1320 },
+      { "width": 1290, "height": 2796 },
+      { "width": 2796, "height": 1290 }
+    ],
+    "6.5\"": [
+      { "width": 1242, "height": 2688 },
+      { "width": 2688, "height": 1242 },
+      { "width": 1284, "height": 2778 },
+      { "width": 2778, "height": 1284 }
+    ],
+    "6.3\"": [
+      { "width": 1206, "height": 2622 },
+      { "width": 2622, "height": 1206 },
+      { "width": 1179, "height": 2556 },
+      { "width": 2556, "height": 1179 }
+    ],
+    "6.1\"": [
+      { "width": 1125, "height": 2436 },
+      { "width": 2436, "height": 1125 },
+      { "width": 1080, "height": 2340 },
+      { "width": 2340, "height": 1080 },
+      { "width": 2532, "height": 1170 },
+      { "width": 1170, "height": 2532 }
+    ]
+  },
+  "iPad": {
+    "13\"": [
+      { "width": 2064, "height": 2752 },
+      { "width": 2752, "height": 2064 },
+      { "width": 2048, "height": 2732 },
+      { "width": 2732, "height": 2048 }
+    ],
+    "12.9\"": [
+      { "width": 2048, "height": 2732 },
+      { "width": 2732, "height": 2048 }
+    ],
+    "11\"": [
+      { "width": 1668, "height": 2420 },
+      { "width": 2420, "height": 1668 },
+      { "width": 1668, "height": 2388 },
+      { "width": 2388, "height": 1668 },
+      { "width": 1640, "height": 2360 },
+      { "width": 2360, "height": 1640 },
+      { "width": 2266, "height": 1488 },
+      { "width": 1488, "height": 2266 }
+    ],
+    "10.5\"": [
+      { "width": 1668, "height": 2224 },
+      { "width": 2224, "height": 1668 }
+    ],
+    "9.7\"": [
+      { "width": 1536, "height": 2008 },
+      { "width": 1536, "height": 2048 },
+      { "width": 2048, "height": 1496 },
+      { "width": 2048, "height": 1536 },
+      { "width": 768, "height": 1004 },
+      { "width": 768, "height": 1024 },
+      { "width": 1024, "height": 748 },
+      { "width": 1024, "height": 768 }
+    ]
+  },
+  "Apple Watch": {
+    "Ultra 3": [
+      { "width": 422, "height": 514 },
+      { "width": 410, "height": 502 }
+    ],
+    "Series 11": [
+      { "width": 416, "height": 496 }
+    ],
+    "Series 9": [
+      { "width": 396, "height": 484 }
+    ],
+    "Series 6": [
+      { "width": 368, "height": 448 }
+    ],
+    "Series 3": [
+      { "width": 312, "height": 390 }
+    ]
+  }
+}

@@ -1,0 +1,347 @@
+/**
+ * Global Styles & CSS Custom Properties
+ * App Store Screenshot Converter
+ *
+ * Defines CSS variables for theme switching and design tokens
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================================================== */
+/* CSS CUSTOM PROPERTIES (CSS Variables)                                     */
+/* ========================================================================== */
+
+@layer base {
+  :root {
+    /* ====================================================================== */
+    /* LIGHT THEME (Default)                                                 */
+    /* ====================================================================== */
+
+    /* Background colors */
+    --background: 0 0% 100%; /* White */
+    --foreground: 222 47% 11%; /* Gray 900 */
+
+    /* Card colors */
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 222 47% 11%; /* Gray 900 */
+
+    /* Popover colors */
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 222 47% 11%; /* Gray 900 */
+
+    /* Primary brand colors */
+    --primary: 217 91% 60%; /* Blue 600 */
+    --primary-foreground: 0 0% 100%; /* White */
+
+    /* Secondary colors */
+    --secondary: 220 14% 96%; /* Gray 100 */
+    --secondary-foreground: 222 47% 11%; /* Gray 900 */
+
+    /* Muted colors */
+    --muted: 220 14% 96%; /* Gray 100 */
+    --muted-foreground: 215 16% 47%; /* Gray 600 */
+
+    /* Accent colors */
+    --accent: 220 14% 96%; /* Gray 100 */
+    --accent-foreground: 222 47% 11%; /* Gray 900 */
+
+    /* Destructive/Error colors */
+    --destructive: 0 72% 51%; /* Red 600 */
+    --destructive-foreground: 0 0% 100%; /* White */
+
+    /* Success colors */
+    --success: 142 71% 45%; /* Green 600 */
+    --success-foreground: 0 0% 100%; /* White */
+
+    /* Warning colors */
+    --warning: 25 95% 53%; /* Orange 500 */
+    --warning-foreground: 0 0% 100%; /* White */
+
+    /* Info colors */
+    --info: 217 91% 60%; /* Blue 500 */
+    --info-foreground: 0 0% 100%; /* White */
+
+    /* Border colors */
+    --border: 214 32% 91%; /* Gray 200 */
+    --input: 214 32% 91%; /* Gray 200 */
+
+    /* Ring/Focus colors */
+    --ring: 217 91% 60%; /* Blue 500 */
+
+    /* Border radius */
+    --radius: 0.5rem; /* 8px */
+  }
+
+  .dark {
+    /* ====================================================================== */
+    /* DARK THEME                                                            */
+    /* ====================================================================== */
+
+    /* Background colors */
+    --background: 222 84% 5%; /* Gray 950 */
+    --foreground: 220 9% 98%; /* Gray 50 */
+
+    /* Card colors */
+    --card: 222 47% 11%; /* Gray 900 */
+    --card-foreground: 220 9% 98%; /* Gray 50 */
+
+    /* Popover colors */
+    --popover: 222 47% 11%; /* Gray 900 */
+    --popover-foreground: 220 9% 98%; /* Gray 50 */
+
+    /* Primary brand colors */
+    --primary: 217 91% 60%; /* Blue 600 - same as light for consistency */
+    --primary-foreground: 0 0% 100%; /* White */
+
+    /* Secondary colors */
+    --secondary: 217 33% 17%; /* Gray 800 */
+    --secondary-foreground: 220 9% 98%; /* Gray 50 */
+
+    /* Muted colors */
+    --muted: 217 33% 17%; /* Gray 800 */
+    --muted-foreground: 215 20% 65%; /* Gray 400 */
+
+    /* Accent colors */
+    --accent: 217 33% 17%; /* Gray 800 */
+    --accent-foreground: 220 9% 98%; /* Gray 50 */
+
+    /* Destructive/Error colors */
+    --destructive: 0 72% 51%; /* Red 500 - adjusted for dark */
+    --destructive-foreground: 0 0% 100%; /* White */
+
+    /* Success colors */
+    --success: 142 71% 45%; /* Green 500 */
+    --success-foreground: 0 0% 100%; /* White */
+
+    /* Warning colors */
+    --warning: 25 95% 53%; /* Orange 500 */
+    --warning-foreground: 0 0% 100%; /* White */
+
+    /* Info colors */
+    --info: 217 91% 60%; /* Blue 500 */
+    --info-foreground: 0 0% 100%; /* White */
+
+    /* Border colors */
+    --border: 215 28% 17%; /* Gray 700 */
+    --input: 215 28% 17%; /* Gray 700 */
+
+    /* Ring/Focus colors */
+    --ring: 217 91% 60%; /* Blue 500 */
+  }
+}
+
+/* ========================================================================== */
+/* BASE STYLES                                                                */
+/* ========================================================================== */
+
+@layer base {
+  /* Reset and base styles */
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus visible styles (keyboard navigation) */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Remove focus styles for mouse users */
+  *:focus:not(:focus-visible) {
+    @apply outline-none;
+  }
+}
+
+/* ========================================================================== */
+/* COMPONENT STYLES                                                           */
+/* ========================================================================== */
+
+@layer components {
+  /* Container utilities */
+  .container-narrow {
+    @apply container max-w-screen-md;
+  }
+
+  .container-standard {
+    @apply container max-w-screen-lg;
+  }
+
+  .container-wide {
+    @apply container max-w-screen-xl;
+  }
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Upload zone styles */
+  .upload-zone {
+    @apply relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border bg-muted/50 p-8 transition-all hover:border-primary/50 hover:bg-muted;
+  }
+
+  .upload-zone-active {
+    @apply scale-[1.02] border-solid border-primary bg-primary/5 shadow-md;
+  }
+
+  .upload-zone-disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* Card styles */
+  .card-elevated {
+    @apply rounded-lg border bg-card p-6 shadow-md transition-shadow hover:shadow-lg;
+  }
+
+  .card-interactive {
+    @apply rounded-lg border bg-card p-6 transition-all hover:border-primary/50 hover:shadow-md;
+  }
+
+  /* Focus ring utilities */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent;
+  }
+
+  /* Scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+/* ========================================================================== */
+/* UTILITY STYLES                                                             */
+/* ========================================================================== */
+
+@layer utilities {
+  /* Animation delays */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  /* Backdrop blur utilities */
+  .backdrop-blur-glass {
+    backdrop-filter: blur(12px) saturate(180%);
+    background-color: hsl(var(--background) / 0.8);
+  }
+
+  /* Truncate multi-line text */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Safe area insets (for mobile) */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ========================================================================== */
+/* PRINT STYLES                                                               */
+/* ========================================================================== */
+
+@media print {
+  @page {
+    margin: 2cm;
+  }
+
+  body {
+    @apply text-black;
+  }
+
+  /* Hide interactive elements */
+  button,
+  .no-print {
+    @apply hidden;
+  }
+}
+
+/* ========================================================================== */
+/* REDUCED MOTION                                                             */
+/* ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
