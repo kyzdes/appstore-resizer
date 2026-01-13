@@ -5,6 +5,10 @@ This is a fully client-side rendition of the Figma concept available at https://
 
 The app runs entirely in the browser: images are validated locally (JPEG/PNG, ≤20 MB, max 10 files), resized sequentially for every selected App Store target resolution, flattened on a white background, and bundled into a ZIP archive that the browser downloads. No backend or API is required, which makes it easy to deploy on any static host or VPS.
 
+## VPS edition
+
+See `VPS_EDITION.md` for the current VPS deployment notes.
+
 ## Local development
 
 ```bash
