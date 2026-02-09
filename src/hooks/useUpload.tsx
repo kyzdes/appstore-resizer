@@ -76,10 +76,14 @@ export const useUpload = () => {
     setImages([]);
   }, [images]);
 
+  // Use a ref to track current images for unmount cleanup
+  const imagesRef = React.useRef(images);
+  imagesRef.current = images;
+
   // Cleanup on unmount
   React.useEffect(() => {
     return () => {
-      images.forEach((image) => {
+      imagesRef.current.forEach((image) => {
         URL.revokeObjectURL(image.preview);
       });
     };

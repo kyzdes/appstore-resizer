@@ -29,14 +29,10 @@ export const useResolutions = () => {
   // Toggle resolution selection
   const toggleResolution = React.useCallback((resolution: Resolution) => {
     setSelectedResolutions((prev) => {
-      const exists = prev.find(
-        (r) => r.width === resolution.width && r.height === resolution.height
-      );
+      const exists = prev.find((r) => r.id === resolution.id);
 
       if (exists) {
-        return prev.filter(
-          (r) => !(r.width === resolution.width && r.height === resolution.height)
-        );
+        return prev.filter((r) => r.id !== resolution.id);
       } else {
         return [...prev, resolution];
       }
@@ -46,9 +42,7 @@ export const useResolutions = () => {
   // Check if resolution is selected
   const isResolutionSelected = React.useCallback(
     (resolution: Resolution) => {
-      return selectedResolutions.some(
-        (r) => r.width === resolution.width && r.height === resolution.height
-      );
+      return selectedResolutions.some((r) => r.id === resolution.id);
     },
     [selectedResolutions]
   );
@@ -59,9 +53,7 @@ export const useResolutions = () => {
       const newResolutions = [...prev];
 
       filteredResolutions.forEach((resolution) => {
-        const exists = newResolutions.find(
-          (r) => r.width === resolution.width && r.height === resolution.height
-        );
+        const exists = newResolutions.find((r) => r.id === resolution.id);
         if (!exists) {
           newResolutions.push(resolution);
         }
@@ -75,9 +67,7 @@ export const useResolutions = () => {
   const deselectAll = React.useCallback(() => {
     setSelectedResolutions((prev) => {
       return prev.filter((resolution) => {
-        return !filteredResolutions.some(
-          (r) => r.width === resolution.width && r.height === resolution.height
-        );
+        return !filteredResolutions.some((r) => r.id === resolution.id);
       });
     });
   }, [filteredResolutions]);

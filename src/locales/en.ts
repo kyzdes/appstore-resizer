@@ -91,6 +91,9 @@ export const en = {
     subtitle: 'Your screenshots have been successfully processed',
     button: 'Download ZIP',
     downloadingButton: 'Downloading...',
+    totalFiles: '{count} total files created',
+    zipReady: 'Your ZIP file is ready',
+    zipDescription: 'Click below to download all processed screenshots',
     stats: {
       totalImages: 'Total images',
       totalResolutions: 'Resolutions',

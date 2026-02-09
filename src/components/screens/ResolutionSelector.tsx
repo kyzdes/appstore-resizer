@@ -60,25 +60,17 @@ export const ResolutionSelector: React.FC<ResolutionSelectorProps> = ({
   const { t } = useLocale();
 
   const toggleResolution = (resolution: Resolution) => {
-    const isSelected = selectedResolutions.some(
-      (r) => r.width === resolution.width && r.height === resolution.height
-    );
+    const selected = selectedResolutions.some((r) => r.id === resolution.id);
 
-    if (isSelected) {
-      onSelectionChange(
-        selectedResolutions.filter(
-          (r) => !(r.width === resolution.width && r.height === resolution.height)
-        )
-      );
+    if (selected) {
+      onSelectionChange(selectedResolutions.filter((r) => r.id !== resolution.id));
     } else {
       onSelectionChange([...selectedResolutions, resolution]);
     }
   };
 
   const isSelected = (resolution: Resolution) => {
-    return selectedResolutions.some(
-      (r) => r.width === resolution.width && r.height === resolution.height
-    );
+    return selectedResolutions.some((r) => r.id === resolution.id);
   };
 
   // Group resolutions by device
@@ -168,13 +160,13 @@ export const ResolutionSelector: React.FC<ResolutionSelectorProps> = ({
 
             {/* Resolution Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {deviceResolutions.map((resolution, index) => {
+              {deviceResolutions.map((resolution) => {
                 const selected = isSelected(resolution);
                 const isPortrait = resolution.orientation === 'portrait';
 
                 return (
                   <Card
-                    key={`${resolution.width}x${resolution.height}-${index}`}
+                    key={resolution.id}
                     variant="interactive"
                     padding="none"
                     onClick={() => toggleResolution(resolution)}

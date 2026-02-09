@@ -93,6 +93,9 @@ export const ru: Translation = {
     subtitle: 'Ваши скриншоты успешно обработаны',
     button: 'Скачать ZIP',
     downloadingButton: 'Загрузка...',
+    totalFiles: '{count} файлов создано',
+    zipReady: 'Ваш ZIP-файл готов',
+    zipDescription: 'Нажмите ниже, чтобы скачать все обработанные скриншоты',
     stats: {
       totalImages: 'Всего изображений',
       totalResolutions: 'Разрешений',

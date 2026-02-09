@@ -10,7 +10,7 @@
 import * as React from 'react';
 import { UploadedImage, Resolution, ProcessingStatus, ProcessedResult } from '@/types';
 import { resizeImage, generateResizedFilename } from '@/utils/imageProcessor';
-import { createZipFile, generateZipFilename, downloadZipFile } from '@/utils/zipGenerator';
+import { createZipFile, generateZipFilename } from '@/utils/zipGenerator';
 import { formatFileSize } from '@/utils/formatters';
 import { useToast } from './useToast';
 import { useImageSettings } from './useImageSettings';
@@ -142,19 +142,23 @@ export const useImageProcessor = () => {
         return false;
       }
     },
-    [showSuccess, showError]
+    [showSuccess, showError, settings]
   );
 
   const downloadResult = React.useCallback(() => {
     if (!result) return;
 
     const filename = generateZipFilename('appstore-screenshots');
-    const blob = fetch(result.downloadUrl).then((r) => r.blob());
 
-    blob.then((b) => {
-      downloadZipFile(b, filename);
-      showSuccess('Download Started', 'Your screenshots ZIP is downloading');
-    });
+    // Download directly from the existing blob URL instead of re-fetching it
+    const link = document.createElement('a');
+    link.href = result.downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showSuccess('Download Started', 'Your screenshots ZIP is downloading');
   }, [result, showSuccess]);
 
   const reset = React.useCallback(() => {

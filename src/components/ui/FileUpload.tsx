@@ -17,6 +17,7 @@ import { Upload, X, FileImage, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { Button } from './Button';
 import { useLocale } from '@/hooks/useLocale';
+import { formatFileSize } from '@/utils/formatters';
 
 export interface FileUploadProps {
   /** Accepted file types */
@@ -292,18 +293,13 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove, removeLabel }
 
   React.useEffect(() => {
     if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+      const url = URL.createObjectURL(file);
+      setPreview(url);
 
-    return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
-    };
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
   }, [file]);
 
   return (
@@ -345,11 +341,3 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove, removeLabel }
   );
 };
 
-// Utility function to format file size
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-}
