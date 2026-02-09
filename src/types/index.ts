@@ -6,6 +6,7 @@
 export type DeviceType = 'iPhone' | 'iPad' | 'Apple Watch';
 
 export interface Resolution {
+  id: string;
   width: number;
   height: number;
   diagonal: string;

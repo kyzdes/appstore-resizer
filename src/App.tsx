@@ -48,16 +48,19 @@ export const App: React.FC = () => {
   // Handle file changes from upload screen
   const handleFilesChange = React.useCallback(
     async (files: File[]) => {
-      if (files.length > images.length) {
-        // New files added
-        const newFiles = files.slice(images.length);
+      const currentFiles = new Set(images.map((img) => img.file));
+      const incomingFiles = new Set(files);
+
+      // Find newly added files (in incoming but not in current)
+      const newFiles = files.filter((f) => !currentFiles.has(f));
+      if (newFiles.length > 0) {
         await addImages(newFiles);
-      } else {
-        // Files removed - find which one
-        const removedImage = images.find((img) => !files.includes(img.file));
-        if (removedImage) {
-          removeImage(removedImage.id);
-        }
+      }
+
+      // Find removed files (in current but not in incoming)
+      const removedImages = images.filter((img) => !incomingFiles.has(img.file));
+      for (const img of removedImages) {
+        removeImage(img.id);
       }
     },
     [images, addImages, removeImage]

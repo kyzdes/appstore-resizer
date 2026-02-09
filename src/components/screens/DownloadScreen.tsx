@@ -110,7 +110,7 @@ export const DownloadScreen: React.FC<DownloadScreenProps> = ({
           {/* Total Files Badge */}
           <div className="flex justify-center pt-4">
             <Badge variant="success" size="lg">
-              {result.totalImages * result.totalResolutions} total files created
+              {t('download.totalFiles', { count: result.totalImages * result.totalResolutions })}
             </Badge>
           </div>
         </CardContent>
@@ -135,9 +135,9 @@ export const DownloadScreen: React.FC<DownloadScreenProps> = ({
 
             {/* Download Text */}
             <div className="text-center space-y-2">
-              <h2 className="text-xl font-semibold">Your ZIP file is ready</h2>
+              <h2 className="text-xl font-semibold">{t('download.zipReady')}</h2>
               <p className="text-sm text-muted-foreground">
-                Click below to download all processed screenshots
+                {t('download.zipDescription')}
               </p>
             </div>
 
